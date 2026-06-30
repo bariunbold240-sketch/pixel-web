@@ -5,6 +5,7 @@ import { packagePlans } from '../../data/siteContent'
 import { useSectionAnim } from '../useSectionAnim'
 import TypewriterText from '../TypewriterText'
 import { useLang } from '../../context/LangContext'
+import { useBreakpoint } from '../../hooks/useBreakpoint'
 
 interface PackagesSectionProps {
   active: boolean
@@ -16,15 +17,9 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
   const { lang } = useLang()
   const mn = lang === 'mn'
   const [page, setPage] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)')
-    setIsMobile(mq.matches)
-    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+  // Deck-vs-scroll nav mode is keyed to the same 767px line as page.tsx/globals.css —
+  // intentionally not the tablet/lg lines used by the grid-column fix below.
+  const { isMobile } = useBreakpoint()
 
   // Mobile: show all 8 plans at once. Desktop: paginate 4 per page.
   const plansToShow = isMobile ? packagePlans : packagePlans.slice(page * 4, page * 4 + 4)
@@ -125,8 +120,14 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
           ))}
         </div>
 
-        {/* Cards: all on mobile scroll, 4-column paginated on desktop */}
-        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-5">
+        {/* Cards: swipeable carousel on small mobile, 2-up grid from 430px (tablet too), 4-col paginated on desktop */}
+        <div
+          ref={gridRef}
+          className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3 pt-5
+                    -mx-[clamp(28px,6vw,96px)] px-[clamp(28px,6vw,96px)]
+                    xs:grid xs:grid-cols-2 xs:overflow-visible xs:snap-none xs:mx-0 xs:px-0
+                    md:grid-cols-2 lg:grid-cols-4"
+        >
           {plansToShow.map((plan, i) => {
             const globalIndex = indexOffset + i
             const isFeatured = !!plan.featured
@@ -135,7 +136,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                 key={globalIndex}
                 data-anim
                 data-card
-                className="relative flex flex-col overflow-hidden rounded-xl cursor-default"
+                className="shrink-0 w-[78vw] snap-center xs:w-auto xs:shrink relative flex flex-col overflow-hidden rounded-xl cursor-default"
                 style={
                   isFeatured
                     ? {
@@ -156,7 +157,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                     style={{ background: 'linear-gradient(90deg,#6f63ff,#ff4fd8)' }} />
                 )}
 
-                <div className="p-2.5 md:p-4 flex flex-col h-full">
+                <div className="p-4 flex flex-col h-full">
                   {/* Featured badge — in-flow so it doesn't overlap plan name */}
                   {isFeatured && (
                     <div className="self-start text-[7px] font-black tracking-wider px-2 py-0.5 rounded-full mb-2"
@@ -188,7 +189,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                     {plan.features.map((f, j) => {
                       const included = f.value !== '—'
                       return (
-                        <li key={j} className="flex items-center justify-between gap-1 text-[11px] md:text-[15px]">
+                        <li key={j} className="flex items-center justify-between gap-1 text-[11px] md:text-[13px] lg:text-[15px]">
                           <span className={`flex items-center gap-1.5 min-w-0 ${included ? 'text-mute/80' : 'text-mute/25'}`}>
                             <span className="shrink-0 w-3 h-3 rounded-full flex items-center justify-center text-[7px]"
                               style={{
@@ -204,7 +205,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                             <span className="truncate">{f.label}</span>
                           </span>
                           <span
-                            className="shrink-0 font-bold text-[11px] md:text-[15px] ml-1"
+                            className="shrink-0 font-bold text-[11px] md:text-[13px] lg:text-[15px] ml-1"
                             style={{ color: included ? (isFeatured ? '#ff4fd8' : '#f7f9ff') : 'rgba(184,194,221,0.2)' }}
                           >
                             {f.value}

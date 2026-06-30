@@ -1,8 +1,9 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 
 const SECTIONS = ['Профайл', 'Аюулгүй байдал', 'Мэдэгдэл', 'Дүр төрх'] as const
+
 type Section = typeof SECTIONS[number]
 
 export default function SettingsPage() {
@@ -16,32 +17,35 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-8 flex flex-col gap-8">
+    <div className="flex flex-col gap-6 p-4 sm:gap-8 sm:p-6 lg:p-8">
       <div>
-        <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(184,194,221,0.4)' }}>
+        <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: 'rgba(184,194,221,0.4)' }}>
           Систем
         </p>
-        <h1 className="text-[28px] font-black text-pxwhite tracking-tight">Тохиргоо</h1>
+        <h1 className="text-[24px] font-black tracking-tight text-pxwhite sm:text-[28px]">Тохиргоо</h1>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
         {/* Sidebar tabs */}
-        <div className="flex flex-col gap-1 w-44 shrink-0">
-          {SECTIONS.map((s) => (
-            <button key={s} onClick={() => setActive(s)}
-              className="text-left px-4 py-2.5 rounded-xl text-[13px] font-medium border-0 cursor-pointer transition-all duration-150"
+        <div className="flex w-full gap-2 overflow-x-auto pb-1 no-scrollbar lg:w-44 lg:flex-col lg:overflow-visible lg:pb-0">
+          {SECTIONS.map((section) => (
+            <button
+              key={section}
+              onClick={() => setActive(section)}
+              className="shrink-0 rounded-xl px-4 py-2.5 text-left text-[13px] font-medium transition-all duration-150 lg:w-full"
               style={
-                active === s
+                active === section
                   ? { background: 'rgba(111,99,255,0.18)', color: '#f7f9ff', border: '1px solid rgba(111,99,255,0.3)' }
                   : { background: 'transparent', color: 'rgba(184,194,221,0.5)', border: '1px solid transparent' }
-              }>
-              {s}
+              }
+            >
+              {section}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="flex-1 glass-card rounded-2xl p-6" style={{ border: '1px solid rgba(111,99,255,0.15)' }}>
+        <div className="flex-1 min-w-0 glass-card rounded-2xl p-4 sm:p-6" style={{ border: '1px solid rgba(111,99,255,0.15)' }}>
           {active === 'Профайл' && (
             <form onSubmit={handleSave} className="flex flex-col gap-5">
               <h2 className="text-[16px] font-black text-pxwhite">Профайл мэдээлэл</h2>
@@ -49,23 +53,27 @@ export default function SettingsPage() {
                 { label: 'Нэр',    placeholder: 'Таны нэр' },
                 { label: 'И-мэйл', placeholder: 'name@example.com' },
                 { label: 'Утас',   placeholder: '+976 9900 0000' },
-              ].map((f) => (
-                <div key={f.label} className="flex flex-col gap-1.5">
+              ].map((field) => (
+                <div key={field.label} className="flex flex-col gap-1.5">
                   <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.5)' }}>
-                    {f.label}
+                    {field.label}
                   </label>
-                  <input type="text" placeholder={f.placeholder}
-                    className="rounded-xl px-4 py-3 text-[14px] text-pxwhite placeholder-mute/30 outline-none max-w-sm"
+                  <input
+                    type="text"
+                    placeholder={field.placeholder}
+                    className="w-full max-w-none rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none placeholder-mute/30 sm:max-w-sm"
                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(111,99,255,0.2)' }}
-                    onFocus={e => (e.target.style.borderColor = 'rgba(111,99,255,0.55)')}
-                    onBlur={e  => (e.target.style.borderColor = 'rgba(111,99,255,0.2)')}
+                    onFocus={(e) => (e.target.style.borderColor = 'rgba(111,99,255,0.55)')}
+                    onBlur={(e) => (e.target.style.borderColor = 'rgba(111,99,255,0.2)')}
                   />
                 </div>
               ))}
-              <div className="flex items-center gap-3 mt-2">
-                <button type="submit"
-                  className="px-6 py-2.5 rounded-xl text-[13px] font-bold border-0 cursor-pointer"
-                  style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff' }}>
+              <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button
+                  type="submit"
+                  className="w-full rounded-xl border-0 px-6 py-2.5 text-[13px] font-bold text-white sm:w-auto"
+                  style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)' }}
+                >
                   Хадгалах
                 </button>
                 {saved && (
@@ -76,9 +84,11 @@ export default function SettingsPage() {
           )}
 
           {active !== 'Профайл' && (
-            <div className="flex flex-col items-center justify-center gap-3 py-16">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                style={{ background: 'rgba(111,99,255,0.12)', border: '1px solid rgba(111,99,255,0.2)' }}>
+            <div className="flex flex-col items-center justify-center gap-3 py-14 sm:py-16">
+              <div
+                className="flex h-12 w-12 items-center justify-center rounded-2xl"
+                style={{ background: 'rgba(111,99,255,0.12)', border: '1px solid rgba(111,99,255,0.2)' }}
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6f63ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>

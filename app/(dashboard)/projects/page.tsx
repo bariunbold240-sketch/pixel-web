@@ -1,4 +1,4 @@
-const PROJECTS = [
+﻿const PROJECTS = [
   { name: 'GYMHUB Фитнесс',    status: 'Идэвхтэй', members: 6932, color: '#15a59a' },
   { name: 'NOVA MIND Acadем',  status: 'Идэвхтэй', members: 420,  color: '#6f63ff' },
   { name: 'BLUEBELL Цэцэгхан', status: 'Хянаж байна', members: 118, color: '#ff4fd8' },
@@ -11,53 +11,137 @@ const STATUS_COLOR: Record<string, string> = {
   'Дууссан':     'rgba(184,194,221,0.4)',
 }
 
+function ProjectMobileCard({
+  project,
+  index,
+}: {
+  project: (typeof PROJECTS)[number]
+  index: number
+}) {
+  const statusColor = STATUS_COLOR[project.status]
+
+  return (
+    <div className="glass-card rounded-2xl p-4" style={{ border: `1px solid ${project.color}22` }}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div
+            className="h-10 w-10 shrink-0 rounded-lg"
+            style={{
+              background: `linear-gradient(135deg,${project.color}44,${project.color}18)`,
+              border: `1px solid ${project.color}33`,
+            }}
+          />
+          <div className="min-w-0">
+            <p className="truncate text-[14px] font-bold text-pxwhite">{project.name}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: project.color }}>
+              {project.status}
+            </p>
+          </div>
+        </div>
+        <span
+          className="shrink-0 rounded-lg border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em]"
+          style={{
+            background: `${project.color}12`,
+            color: project.color,
+            borderColor: `${project.color}22`,
+          }}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </span>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-xl p-3" style={{ background: `${project.color}12`, border: `1px solid ${project.color}20` }}>
+          <p className="text-[9px] uppercase tracking-[0.16em]" style={{ color: 'rgba(184,194,221,0.45)' }}>
+            Хэрэглэгч
+          </p>
+          <p className="mt-1 text-[18px] font-black leading-none" style={{ color: project.color }}>
+            {project.members.toLocaleString()}
+          </p>
+        </div>
+        <div className="rounded-xl p-3" style={{ background: 'rgba(111,99,255,0.06)', border: '1px solid rgba(111,99,255,0.12)' }}>
+          <p className="text-[9px] uppercase tracking-[0.16em]" style={{ color: 'rgba(184,194,221,0.45)' }}>
+            Статус
+          </p>
+          <p className="mt-1 text-[12px] font-semibold text-pxwhite" style={{ color: statusColor }}>
+            {project.status}
+          </p>
+        </div>
+      </div>
+
+      <button
+        className="mt-4 w-full rounded-xl border-0 bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-4 py-3 text-[12px] font-bold text-white"
+      >
+        Харах
+      </button>
+    </div>
+  )
+}
+
 export default function ProjectsPage() {
   return (
-    <div className="p-8 flex flex-col gap-8">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-6 p-4 sm:gap-8 sm:p-6 lg:p-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(184,194,221,0.4)' }}>
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: 'rgba(184,194,221,0.4)' }}>
             Удирдлага
           </p>
-          <h1 className="text-[28px] font-black text-pxwhite tracking-tight">Төслүүд</h1>
+          <h1 className="text-[24px] font-black tracking-tight text-pxwhite sm:text-[28px]">Төслүүд</h1>
         </div>
         <button
-          className="px-5 py-2.5 rounded-xl text-[13px] font-bold border-0 cursor-pointer"
-          style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff',
-            boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}>
+          className="w-full rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto"
+          style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}
+        >
           + Шинэ төсөл
         </button>
       </div>
 
-      <div className="glass-card rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(111,99,255,0.15)' }}>
+      <div className="flex flex-col gap-3 sm:hidden">
+        {PROJECTS.map((project, index) => (
+          <ProjectMobileCard key={project.name} project={project} index={index} />
+        ))}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-2xl sm:block glass-card" style={{ border: '1px solid rgba(111,99,255,0.15)' }}>
         {/* Table header */}
-        <div className="grid grid-cols-[1fr_140px_120px_80px] gap-4 px-6 py-3 border-b"
-          style={{ borderColor: 'rgba(111,99,255,0.1)', background: 'rgba(111,99,255,0.04)' }}>
+        <div
+          className="grid grid-cols-[1fr_140px_120px_80px] gap-4 border-b px-6 py-3"
+          style={{ borderColor: 'rgba(111,99,255,0.1)', background: 'rgba(111,99,255,0.04)' }}
+        >
           {['Төслийн нэр', 'Статус', 'Хэрэглэгч', ''].map((h) => (
-            <span key={h} className="text-[11px] font-bold uppercase tracking-wider"
-              style={{ color: 'rgba(184,194,221,0.4)' }}>{h}</span>
+            <span key={h} className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.4)' }}>
+              {h}
+            </span>
           ))}
         </div>
 
         {/* Table rows */}
-        {PROJECTS.map((p, i) => (
-          <div key={i}
-            className="grid grid-cols-[1fr_140px_120px_80px] gap-4 items-center px-6 py-4 border-b transition-colors duration-150"
-            style={{ borderColor: 'rgba(111,99,255,0.06)',
-              background: i % 2 === 0 ? 'transparent' : 'rgba(111,99,255,0.02)' }}>
+        {PROJECTS.map((project, index) => (
+          <div
+            key={project.name}
+            className="grid grid-cols-[1fr_140px_120px_80px] items-center gap-4 border-b px-6 py-4 transition-colors duration-150"
+            style={{ borderColor: 'rgba(111,99,255,0.06)', background: index % 2 === 0 ? 'transparent' : 'rgba(111,99,255,0.02)' }}
+          >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg shrink-0"
-                style={{ background: `linear-gradient(135deg,${p.color}44,${p.color}18)`,
-                  border: `1px solid ${p.color}33` }} />
-              <span className="text-[14px] font-bold text-pxwhite">{p.name}</span>
+              <div
+                className="h-8 w-8 shrink-0 rounded-lg"
+                style={{
+                  background: `linear-gradient(135deg,${project.color}44,${project.color}18)`,
+                  border: `1px solid ${project.color}33`,
+                }}
+              />
+              <span className="text-[14px] font-bold text-pxwhite">{project.name}</span>
             </div>
-            <span className="text-[12px] font-bold px-3 py-1 rounded-full self-start mt-0.5"
-              style={{ background: `${STATUS_COLOR[p.status]}18`, color: STATUS_COLOR[p.status] }}>
-              {p.status}
+            <span
+              className="self-start rounded-full px-3 py-1 text-[12px] font-bold"
+              style={{ background: `${STATUS_COLOR[project.status]}18`, color: STATUS_COLOR[project.status] }}
+            >
+              {project.status}
             </span>
-            <span className="text-[13px] font-medium" style={{ color: p.color }}>{p.members.toLocaleString()}</span>
-            <button className="text-[12px] font-bold px-3 py-1.5 rounded-lg border-0 cursor-pointer transition-colors duration-150"
-              style={{ background: 'rgba(111,99,255,0.1)', color: '#6f63ff' }}>
+            <span className="text-[13px] font-medium" style={{ color: project.color }}>
+              {project.members.toLocaleString()}
+            </span>
+            <button className="cursor-pointer rounded-lg border-0 bg-[rgba(111,99,255,0.1)] px-3 py-1.5 text-[12px] font-bold text-[#6f63ff] transition-colors duration-150">
               Харах
             </button>
           </div>

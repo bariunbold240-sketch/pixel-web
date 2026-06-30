@@ -29,13 +29,13 @@ export default function AppNav({ cur, go }: AppNavProps) {
         </p> 
       </div>
 
-      {/* Mobile: lang toggle only */}
-      <div className="flex md:hidden items-center gap-0.75 p-0.75 rounded-[10px] bg-glass border border-line">
+      {/* Mobile/tablet (<820px): lang toggle only */}
+      <div className="flex tablet:hidden items-center gap-0.75 p-0.75 rounded-[10px] bg-glass border border-line">
         {(['mn', 'en'] as const).map((l) => (
           <button
             key={l}
             onClick={() => setLang(l)}
-            className={`font-heading font-bold text-[9px] px-2.5 py-1.25 rounded-[10px] uppercase tracking-[0.06em] border-0 cursor-pointer transition-all duration-250 ${
+            className={`font-heading font-bold text-[9px] px-2.5 py-1.25 min-h-11 rounded-[10px] uppercase tracking-[0.06em] border-0 cursor-pointer transition-all duration-250 ${
               lang === l
                 ? 'text-white [background:linear-gradient(90deg,#6f63ff,#ff4fd8)] shadow-[0_4px_14px_rgba(111,99,255,0.35)]'
                 : 'text-mute bg-transparent hover:text-pxwhite'
@@ -46,8 +46,8 @@ export default function AppNav({ cur, go }: AppNavProps) {
         ))}
       </div>
 
-      {/* Desktop nav links + lang toggle */}
-      <div className="max-[820px]:hidden flex gap-[32px]">
+      {/* Tablet (≥820px) + desktop: nav links + lang toggle */}
+      <div className="hidden tablet:flex gap-[32px]">
         {t.nav.map((label, i) => (
           <a
             key={i}

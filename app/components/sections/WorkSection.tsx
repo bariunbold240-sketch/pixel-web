@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLang } from '../../context/LangContext'
+import { useBreakpoint } from '../../hooks/useBreakpoint'
 
 interface WorkSectionProps {
   active: boolean
@@ -99,23 +100,26 @@ function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContent
         .to(el.querySelector('[data-anim="dots"]'),
           { opacity: 1, duration: 0.36 }, '-=0.2')
         .call(() => {
-          const hover = (sel: string, inV: object, outV: object) => {
-            el.querySelectorAll<HTMLElement>(sel).forEach(elem => {
-              const onIn  = () => gsap.to(elem, { ...inV,  duration: 0.26, ease: 'power2.out',   overwrite: 'auto' })
-              const onOut = () => gsap.to(elem, { ...outV, duration: 0.42, ease: 'power2.inOut', overwrite: 'auto' })
-              elem.addEventListener('mouseenter', onIn)
-              elem.addEventListener('mouseleave', onOut)
-              off.push(
-                () => elem.removeEventListener('mouseenter', onIn),
-                () => elem.removeEventListener('mouseleave', onOut),
-              )
-            })
-          }
+          // No pointer hover capability — skip decorative hover listeners (idle showcase cycle still runs)
+          if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            const hover = (sel: string, inV: object, outV: object) => {
+              el.querySelectorAll<HTMLElement>(sel).forEach(elem => {
+                const onIn  = () => gsap.to(elem, { ...inV,  duration: 0.26, ease: 'power2.out',   overwrite: 'auto' })
+                const onOut = () => gsap.to(elem, { ...outV, duration: 0.42, ease: 'power2.inOut', overwrite: 'auto' })
+                elem.addEventListener('mouseenter', onIn)
+                elem.addEventListener('mouseleave', onOut)
+                off.push(
+                  () => elem.removeEventListener('mouseenter', onIn),
+                  () => elem.removeEventListener('mouseleave', onOut),
+                )
+              })
+            }
 
-          hover('[data-anim="tag"]',   { x: 7 },                          { x: 0 })
-          hover('[data-anim="title"]', { x: 5, scale: 1.018, transformOrigin: '0% 50%' }, { x: 0, scale: 1 })
-          hover('[data-anim="tech"]',  { y: -6, scale: 1.12 },            { y: 0, scale: 1 })
-          hover('[data-anim="stat"]',  { y: -5, scale: 1.06 },            { y: 0, scale: 1 })
+            hover('[data-anim="tag"]',   { x: 7 },                          { x: 0 })
+            hover('[data-anim="title"]', { x: 5, scale: 1.018, transformOrigin: '0% 50%' }, { x: 0, scale: 1 })
+            hover('[data-anim="tech"]',  { y: -6, scale: 1.12 },            { y: 0, scale: 1 })
+            hover('[data-anim="stat"]',  { y: -5, scale: 1.06 },            { y: 0, scale: 1 })
+          }
 
           let cycle = 0
           idleTimer = setInterval(() => {
@@ -172,9 +176,9 @@ function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContent
         {mn ? p.description.mn : p.description.en}
       </p>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 md:gap-3">
         {p.stats.map((s) => (
-          <div data-anim="stat" key={s.en} className="glass-card rounded-2xl p-4 text-center">
+          <div data-anim="stat" key={s.en} className="glass-card rounded-2xl p-3 md:p-4 text-center">
             <p
               className="text-[clamp(18px,2vw,28px)] font-black leading-none mb-1"
               style={{ color: p.accent }}
@@ -191,12 +195,17 @@ function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContent
           <button
             key={i}
             onClick={() => goTo(i, i > idxRef.current ? 1 : -1)}
-            className="h-1 rounded-full transition-all duration-300 border-0 cursor-pointer"
-            style={{
-              width: i === activeIdx ? 28 : 10,
-              background: i === activeIdx ? p.accent : 'rgba(184,194,221,0.2)',
-            }}
-          />
+            aria-label={`${mn ? 'Төсөл' : 'Project'} ${i + 1}`}
+            className="flex items-center justify-center min-h-11 lg:min-h-0 px-0.5 border-0 cursor-pointer bg-transparent"
+          >
+            <span
+              className="block h-1 rounded-full transition-all duration-300"
+              style={{
+                width: i === activeIdx ? 28 : 10,
+                background: i === activeIdx ? p.accent : 'rgba(184,194,221,0.2)',
+              }}
+            />
+          </button>
         ))}
         <span className="ml-2 text-[11px] text-mute/50">
           {String(activeIdx + 1).padStart(2, '0')} / {String(totalCount).padStart(2, '0')}
@@ -209,6 +218,7 @@ function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContent
 export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
   const { lang } = useLang()
   const mn = lang === 'mn'
+  const { isDesktop } = useBreakpoint()
   const [activeIdx, setActiveIdx] = useState(0)
   const mockupRefs  = useRef<(HTMLDivElement | null)[]>([])
   const rightColRef = useRef<HTMLDivElement>(null)
@@ -274,7 +284,9 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
   }, [active])
 
   useLayoutEffect(() => {
-    if (!active) return
+    // Wheel-driven mini-carousel is desktop-deck-navigation behavior; on
+    // mobile/tablet the page is normal-scroll, so skip attaching entirely.
+    if (!active || !isDesktop) return
     let timer: ReturnType<typeof setTimeout>
 
     const onWheel = (e: WheelEvent) => {
@@ -293,14 +305,14 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
       window.removeEventListener('wheel', onWheel, { capture: true })
       clearTimeout(timer)
     }
-  }, [active])
+  }, [active, isDesktop])
 
   const p = PROJECTS[activeIdx]
 
   return (
     <section className={`panel${active ? ' active' : ''}`} ref={sectionRef}>
       {/* ── Technology Showcase Strip (desktop only) ── */}
-      <div className="hidden md:block absolute z-20" style={{ left: '50%', transform: 'translateX(-50%)', width: 560, bottom: 32 }}>
+      <div className="hidden lg:block absolute z-20" style={{ left: '50%', transform: 'translateX(-50%)', width: 560, bottom: 32 }}>
         <div
           className="pointer-events-none absolute inset-x-0"
           style={{ top: -40, height: 140, background: `radial-gradient(ellipse 60% 100% at 50% 100%, ${p.accent}14 0%, transparent 70%)` }}
@@ -336,11 +348,11 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
         </div>
       </div>
 
-      <div className="panel-inner w-full flex flex-col md:flex-row md:h-full">
+      <div className="panel-inner w-full flex flex-col lg:flex-row lg:h-full">
 
         {/* ── LEFT: project info ── */}
         <div
-          className="shrink-0 flex flex-col md:justify-center relative overflow-hidden w-full md:w-[48%] md:h-full"
+          className="shrink-0 flex flex-col lg:justify-center relative overflow-hidden w-full lg:w-[48%] lg:h-full"
           style={{ padding: 'clamp(28px,5vw,80px)', paddingTop: 'max(80px, clamp(28px,5vw,80px))' }}
         >
           <div
@@ -361,7 +373,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
         {/* ── RIGHT: overlapping mockup cards ── */}
         <div
           ref={rightColRef}
-          className="w-full h-72 md:flex-1 md:h-full relative overflow-hidden"
+          className="w-full aspect-[16/10] lg:aspect-auto lg:flex-1 lg:h-full relative overflow-hidden"
           style={{ overscrollBehavior: 'none', touchAction: 'none' }}
         >
           {PROJECTS.map((proj, i) => (

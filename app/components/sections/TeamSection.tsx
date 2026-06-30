@@ -21,6 +21,9 @@ const PHOTOS = [
 ]
 
 // ─── Floating nav arrow ────────────────────────────────────────────────────
+// Hit area (w-11 h-11 = 44px, WCAG 2.5.8) is intentionally larger than the
+// visible circle (w-10 h-10 = 40px) — the inner span carries all the visual
+// styling unchanged, so rendered pixels are identical on every breakpoint.
 function NavArrow({
   dir,
   onClick,
@@ -32,87 +35,108 @@ function NavArrow({
     <button
       onClick={onClick}
       aria-label={dir === 'prev' ? 'Өмнөх' : 'Дараах'}
-      className={`absolute top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full
-                  flex items-center justify-center cursor-pointer border-0
-                  transition-all duration-200 hover:scale-110 active:scale-90
+      className={`absolute top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full
+                  flex items-center justify-center cursor-pointer border-0 bg-transparent p-0
                   ${dir === 'prev' ? 'left-1' : 'right-1'}`}
-      style={{
-        background: 'rgba(255,79,216,0.07)',
-        border: '1px solid rgba(255,79,216,0.28)',
-        color: 'rgba(255,255,255,0.7)',
-        fontSize: '22px',
-        lineHeight: 1,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.35), 0 0 12px rgba(255,79,216,0.12)',
-      }}
     >
-      {dir === 'prev' ? '‹' : '›'}
+      <span
+        className="w-10 h-10 rounded-full flex items-center justify-center
+                    transition-all duration-200 hover:scale-110 active:scale-90"
+        style={{
+          background: 'rgba(255,79,216,0.07)',
+          border: '1px solid rgba(255,79,216,0.28)',
+          color: 'rgba(255,255,255,0.7)',
+          fontSize: '22px',
+          lineHeight: 1,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.35), 0 0 12px rgba(255,79,216,0.12)',
+        }}
+      >
+        {dir === 'prev' ? '‹' : '›'}
+      </span>
     </button>
   )
 }
 
-// ─── Thumbnail card ────────────────────────────────────────────────────────
-interface ThumbProps {
+// ─── Thumbnail cell ────────────────────────────────────────────────────────
+// Shared leaf markup for both the desktop rail and the mobile/tablet strip —
+// the two containers differ enough in information architecture to stay
+// separate (see TeamSection below), but the repeated cell rendering doesn't.
+interface ThumbnailCellProps {
   photo: string
   index: number
   active: boolean
   onClick: () => void
-  btnRef: (el: HTMLButtonElement | null) => void
+  variant: 'rail' | 'strip'
+  btnRef?: (el: HTMLButtonElement | null) => void
 }
 
-function Thumb({ photo, index, active, onClick, btnRef }: ThumbProps) {
+function ThumbnailCell({ photo, index, active, onClick, variant, btnRef }: ThumbnailCellProps) {
+  const isRail = variant === 'rail'
+
   return (
     <button
       ref={btnRef}
       onClick={onClick}
       aria-label={`Зураг ${index + 1}`}
-      aria-pressed={active}
-      className="group relative w-full flex-none overflow-hidden cursor-pointer border-0 p-0 bg-transparent"
-      style={{
-        aspectRatio: '1/1',
-        borderRadius: '10px',
-        outline: active
-          ? '1.5px solid rgba(255,79,216,0.9)'
-          : '1.5px solid rgba(255,79,216,0.1)',
-        outlineOffset: '2px',
-        boxShadow: active
-          ? '0 0 22px rgba(255,79,216,0.42), 0 0 8px rgba(255,79,216,0.25)'
-          : 'none',
-        opacity: active ? 1 : 0.4,
-        transition: 'outline 0.28s, box-shadow 0.28s, opacity 0.28s',
-      }}
+      aria-pressed={isRail ? active : undefined}
+      className={`group relative flex-none overflow-hidden cursor-pointer border-0 p-0 bg-transparent ${
+        isRail ? 'w-full' : 'h-16'
+      }`}
+      style={
+        isRail
+          ? {
+              aspectRatio: '1/1',
+              borderRadius: '10px',
+              outline: active ? '1.5px solid rgba(255,79,216,0.9)' : '1.5px solid rgba(255,79,216,0.1)',
+              outlineOffset: '2px',
+              boxShadow: active ? '0 0 22px rgba(255,79,216,0.42), 0 0 8px rgba(255,79,216,0.25)' : 'none',
+              opacity: active ? 1 : 0.4,
+              transition: 'outline 0.28s, box-shadow 0.28s, opacity 0.28s',
+            }
+          : {
+              aspectRatio: '1/1',
+              borderRadius: '10px',
+              outline: active ? '1.5px solid rgba(255,79,216,0.88)' : '1.5px solid transparent',
+              outlineOffset: '2px',
+              boxShadow: active ? '0 0 16px rgba(255,79,216,0.4)' : 'none',
+              opacity: active ? 1 : 0.36,
+              transition: 'all 0.28s ease',
+            }
+      }
     >
-      {/* Glass backing — visible before image loads */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: 'rgba(10,12,28,0.9)',
-          backdropFilter: 'blur(6px)',
-          WebkitBackdropFilter: 'blur(6px)',
-        }}
-      />
+      {/* Glass backing — visible before image loads (rail only, matches original) */}
+      {isRail && (
+        <div
+          className="absolute inset-0 z-0"
+          style={{ background: 'rgba(10,12,28,0.9)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
+        />
+      )}
       <img
         src={photo}
         alt=""
         loading="lazy"
         decoding="async"
-        className="absolute inset-0 w-full h-full object-cover z-10 transition-transform duration-300 ease-out group-hover:scale-[1.06]"
-        style={{ transform: active ? 'scale(1.06)' : undefined }}
+        className={`absolute inset-0 w-full h-full object-cover ${
+          isRail ? 'z-10 transition-transform duration-300 ease-out group-hover:scale-[1.06]' : ''
+        }`}
+        style={isRail ? { transform: active ? 'scale(1.06)' : undefined } : undefined}
       />
-      {/* Active pink tint */}
-      <div
-        className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-300"
-        style={{
-          background: 'linear-gradient(135deg, rgba(255,79,216,0.14) 0%, transparent 55%)',
-          opacity: active ? 1 : 0,
-        }}
-      />
-      {/* Hover brightening */}
-      <div
-        className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-250"
-        style={{ background: 'rgba(255,255,255,0.03)' }}
-      />
+      {isRail && (
+        <>
+          {/* Active pink tint */}
+          <div
+            className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-300"
+            style={{ background: 'linear-gradient(135deg, rgba(255,79,216,0.14) 0%, transparent 55%)', opacity: active ? 1 : 0 }}
+          />
+          {/* Hover brightening */}
+          <div
+            className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-250"
+            style={{ background: 'rgba(255,255,255,0.03)' }}
+          />
+        </>
+      )}
     </button>
   )
 }
@@ -160,11 +184,11 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
       {/* ── Background glow ── */}
       <div
         className="glow-orb"
-        style={{ width: 760, height: 760, top: '-20%', right: '-10%', background: 'radial-gradient(circle, rgba(255,79,216,0.14) 0%, transparent 60%)' }}
+        style={{ width: 'clamp(400px,95vw,760px)', height: 'clamp(400px,95vw,760px)', top: '-20%', right: '-10%', background: 'radial-gradient(circle, rgba(255,79,216,0.14) 0%, transparent 60%)' }}
       />
       <div
         className="glow-orb"
-        style={{ width: 480, height: 480, bottom: '-8%', left: '-8%', background: 'radial-gradient(circle, rgba(111,99,255,0.1) 0%, transparent 60%)' }}
+        style={{ width: 'clamp(280px,70vw,480px)', height: 'clamp(280px,70vw,480px)', bottom: '-8%', left: '-8%', background: 'radial-gradient(circle, rgba(111,99,255,0.1) 0%, transparent 60%)' }}
       />
 
       <div
@@ -200,7 +224,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
             Horizontal padding creates space for the floating arrows.
             The card itself derives width from height × aspect-ratio (portrait).
           */}
-          <div className="relative flex-1 min-h-0 flex items-center justify-center px-3 md:px-14">
+          <div className="relative flex-1 min-h-0 flex items-center justify-center px-3 lg:px-14">
 
             <NavArrow dir="prev" onClick={prev} />
 
@@ -209,7 +233,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
               the poster. height fills the zone; width is auto-derived.
             */}
             <div
-              className="relative overflow-hidden w-full md:w-auto md:h-full"
+              className="relative overflow-hidden w-full lg:w-auto lg:h-full"
               style={{
                 aspectRatio: '1/1',
                 maxWidth: 'min(90vw, 520px)',
@@ -264,7 +288,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
           </div>
 
           {/* ── Right panel: counter + thumbnails + dots (desktop only) ── */}
-          <div className="hidden md:flex flex-col w-36 shrink-0 gap-2.5">
+          <div className="hidden lg:flex flex-col w-36 shrink-0 gap-2.5">
 
             {/* Counter */}
             <div className="shrink-0 flex items-center justify-between">
@@ -280,8 +304,9 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
             {/* Thumbnail list */}
             <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar flex flex-col gap-2">
               {PHOTOS.map((photo, i) => (
-                <Thumb
+                <ThumbnailCell
                   key={i}
+                  variant="rail"
                   photo={photo}
                   index={i}
                   active={i === idx}
@@ -316,30 +341,18 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
           </div>
         </div>
 
-        {/* ── Mobile thumbnail strip ── */}
-        <div className="flex md:hidden mt-3 gap-2 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
-          {PHOTOS.map((photo, i) => {
-            const on = i === idx
-            return (
-              <button
-                key={i}
-                onClick={() => go(i)}
-                aria-label={`Зураг ${i + 1}`}
-                className="relative flex-none overflow-hidden cursor-pointer border-0 p-0 bg-transparent h-16"
-                style={{
-                  aspectRatio: '1/1',
-                  borderRadius: '10px',
-                  outline: on ? '1.5px solid rgba(255,79,216,0.88)' : '1.5px solid transparent',
-                  outlineOffset: '2px',
-                  boxShadow: on ? '0 0 16px rgba(255,79,216,0.4)' : 'none',
-                  opacity: on ? 1 : 0.36,
-                  transition: 'all 0.28s ease',
-                }}
-              >
-                <img src={photo} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
-              </button>
-            )
-          })}
+        {/* ── Mobile/tablet thumbnail strip ── */}
+        <div className="flex lg:hidden mt-3 gap-2 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
+          {PHOTOS.map((photo, i) => (
+            <ThumbnailCell
+              key={i}
+              variant="strip"
+              photo={photo}
+              index={i}
+              active={i === idx}
+              onClick={() => go(i)}
+            />
+          ))}
         </div>
 
         {/* ── Footer ── */}

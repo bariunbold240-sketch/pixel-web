@@ -51,29 +51,32 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
         .call(() => {
           if (!alive) return
 
-          // Hover: chars bounce up individually
-          chars.forEach(ch => {
-            const onIn  = () => gsap.to(ch, { y: -8, scale: 1.12, duration: 0.2,  ease: 'power2.out',   overwrite: 'auto' })
-            const onOut = () => gsap.to(ch, { y: 0,  scale: 1,    duration: 0.35, ease: 'power2.inOut', overwrite: 'auto' })
-            ch.addEventListener('mouseenter', onIn)
-            ch.addEventListener('mouseleave', onOut)
-            off.push(
-              () => ch.removeEventListener('mouseenter', onIn),
-              () => ch.removeEventListener('mouseleave', onOut),
-            )
-          })
+          // No pointer hover capability — skip decorative hover listeners (idle cycle still runs)
+          if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            // Hover: chars bounce up individually
+            chars.forEach(ch => {
+              const onIn  = () => gsap.to(ch, { y: -8, scale: 1.12, duration: 0.2,  ease: 'power2.out',   overwrite: 'auto' })
+              const onOut = () => gsap.to(ch, { y: 0,  scale: 1,    duration: 0.35, ease: 'power2.inOut', overwrite: 'auto' })
+              ch.addEventListener('mouseenter', onIn)
+              ch.addEventListener('mouseleave', onOut)
+              off.push(
+                () => ch.removeEventListener('mouseenter', onIn),
+                () => ch.removeEventListener('mouseleave', onOut),
+              )
+            })
 
-          // Hover: stat cells lift
-          stats.forEach(s => {
-            const onIn  = () => gsap.to(s, { y: -4, scale: 1.05, duration: 0.24, ease: 'power2.out',   overwrite: 'auto' })
-            const onOut = () => gsap.to(s, { y: 0,  scale: 1,    duration: 0.38, ease: 'power2.inOut', overwrite: 'auto' })
-            s.addEventListener('mouseenter', onIn)
-            s.addEventListener('mouseleave', onOut)
-            off.push(
-              () => s.removeEventListener('mouseenter', onIn),
-              () => s.removeEventListener('mouseleave', onOut),
-            )
-          })
+            // Hover: stat cells lift
+            stats.forEach(s => {
+              const onIn  = () => gsap.to(s, { y: -4, scale: 1.05, duration: 0.24, ease: 'power2.out',   overwrite: 'auto' })
+              const onOut = () => gsap.to(s, { y: 0,  scale: 1,    duration: 0.38, ease: 'power2.inOut', overwrite: 'auto' })
+              s.addEventListener('mouseenter', onIn)
+              s.addEventListener('mouseleave', onOut)
+              off.push(
+                () => s.removeEventListener('mouseenter', onIn),
+                () => s.removeEventListener('mouseleave', onOut),
+              )
+            })
+          }
 
           // Idle: alternate between char wave and tilt every ~8 s
           let cycle = 0
@@ -134,11 +137,11 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
             />
           </p>
 
-          <div className="hero-btns flex flex-wrap items-center gap-4 mt-8">
-            <button className="rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 transition-opacity">
-              {mn ? 'БИДНИЙ ТУХАЙ' : 'ABOUT US'}
+          <div className="hero-btns flex flex-col xs:flex-row items-stretch xs:items-center gap-3 xs:gap-4 mt-8">
+            <button className="w-full xs:w-auto rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 transition-opacity">
+              {mn ? 'ХОЛБОО БАРИХ' : 'GET IN TOUCH'}
             </button>
-            <button className="rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 transition-colors">
+            <button className="w-full xs:w-auto rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 transition-colors">
               {mn ? 'БАГЦ' : 'PACKAGES'}
             </button>
           </div>

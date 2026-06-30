@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
 import { useTypewriter } from './useTypewriter'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 
 interface TypewriterTextProps {
   text: string
@@ -16,8 +16,7 @@ export default function TypewriterText({
   delay = 0,
 }: TypewriterTextProps) {
   // On mobile, all sections are mounted simultaneously — start typing regardless of active
-  const [isMobile, setIsMobile] = useState(false)
-  useEffect(() => { setIsMobile(window.matchMedia('(max-width: 767px)').matches) }, [])
+  const isMobile = useMediaQuery('(max-width: 767px)')
 
   const { displayed, done } = useTypewriter(text, active || isMobile, speed, delay)
 

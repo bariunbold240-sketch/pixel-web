@@ -9,6 +9,9 @@ export function useSectionAnim(active: boolean) {
     if (!ref.current) return
     const el = ref.current
     const mobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+    // Input-capability check (not a layout breakpoint) — skip hover listeners
+    // and the idle hover-demo cycle on touch-only devices where they're dead weight.
+    const canHover = typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
     // Mobile: once animated, skip re-runs so active-change never re-hides items
     if (mobile && hasAnimated.current) return
@@ -38,6 +41,7 @@ export function useSectionAnim(active: boolean) {
           delay: 0.1,
           onComplete() {
             if (!alive) return
+            if (!canHover) return  // no pointer hover capability — skip decorative hover/idle cycle entirely
 
             items.forEach(item => {
               if (item.hasAttribute('data-no-hover')) return

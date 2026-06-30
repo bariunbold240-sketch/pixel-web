@@ -33,8 +33,8 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
     <section className={`panel${active ? ' active' : ''}`} ref={sectionRef}>
 
       {/* Glow orbs */}
-      <div className="glow-orb w-[700px] h-[700px] top-[-20%] right-[-10%]"
-        style={{ background: 'radial-gradient(circle, rgba(111,99,255,0.2) 0%, transparent 70%)' }} />
+      <div className="glow-orb top-[-20%] right-[-10%]"
+        style={{ width: 'clamp(380px,90vw,700px)', height: 'clamp(380px,90vw,700px)', background: 'radial-gradient(circle, rgba(111,99,255,0.2) 0%, transparent 70%)' }} />
       <div className="glow-orb w-[400px] h-[400px] bottom-[-5%] left-[-8%]"
         style={{ background: 'radial-gradient(circle, rgba(255,79,216,0.15) 0%, transparent 70%)' }} />
       <div className="glow-orb w-[280px] h-[280px] top-[40%] left-[36%]"
@@ -68,11 +68,11 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
           </div>
         </div>
 
-        {/* Body: 2-column on desktop, stacked on mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-6 md:flex-1 md:min-h-0">
+        {/* Body: 2-column on desktop, stacked through tablet */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 lg:flex-1 lg:min-h-0">
 
           {/* ── Left: Vision card ── */}
-          <div data-anim className="glass-card rounded-2xl p-6 md:p-8 flex flex-col relative overflow-hidden">
+          <div data-anim className="glass-card rounded-2xl p-5 md:p-8 flex flex-col relative overflow-hidden">
 
             {/* Top gradient bar */}
             <div className="absolute top-0 left-0 right-0 h-[2px]"
@@ -137,36 +137,43 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
               </span>
             </div>
 
-            {VALUES.map((v, i) => (
-              <div
-                key={i}
-                data-anim
-                className="glass-card rounded-2xl px-5 py-5 group cursor-default relative overflow-hidden"
-                style={{ borderLeft: `2px solid ${v.color}55` }}
-              >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at 25% 50%, ${v.color}0e, transparent 70%)`,
-                    transition: 'opacity 0.4s' }} />
+            {/* Horizontal swipe carousel below 768px (full mobile-width column with room to
+                spare from md: up, where the original vertical stack is restored) */}
+            <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3
+                            -mx-[clamp(28px,6vw,96px)] px-[clamp(28px,6vw,96px)]
+                            md:flex-col md:overflow-visible md:snap-none md:mx-0 md:px-0">
+              {VALUES.map((v, i) => (
+                <div
+                  key={i}
+                  data-anim
+                  className="shrink-0 w-[78vw] snap-center md:w-auto md:shrink
+                            glass-card rounded-2xl px-5 py-5 group cursor-default relative overflow-hidden"
+                  style={{ borderLeft: `2px solid ${v.color}55` }}
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"
+                    style={{ background: `radial-gradient(circle at 25% 50%, ${v.color}0e, transparent 70%)`,
+                      transition: 'opacity 0.4s' }} />
 
-                <div className="flex items-center gap-4 relative z-10">
-                  <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-black"
-                    style={{ background: `linear-gradient(135deg,${v.color}28,${v.color}0e)`,
-                      border: `1px solid ${v.color}30`, color: v.color }}>
-                    {String(i + 1).padStart(2, '0')}
+                  <div className="flex items-center gap-4 relative z-10">
+                    <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-black"
+                      style={{ background: `linear-gradient(135deg,${v.color}28,${v.color}0e)`,
+                        border: `1px solid ${v.color}30`, color: v.color }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </div>
+
+                    <p className="flex-1 text-[clamp(13px,1.05vw,14px)] font-medium leading-[1.55]"
+                      style={{ color: 'rgba(247,249,255,0.85)' }}>
+                      {mn ? v.mn : v.en}
+                    </p>
+
+                    <span className="shrink-0 text-[13px] group-hover:translate-x-0.5 transition-transform duration-300"
+                      style={{ color: v.color + '50' }}>
+                      →
+                    </span>
                   </div>
-
-                  <p className="flex-1 text-[clamp(13px,1.05vw,14px)] font-medium leading-[1.55]"
-                    style={{ color: 'rgba(247,249,255,0.85)' }}>
-                    {mn ? v.mn : v.en}
-                  </p>
-
-                  <span className="shrink-0 text-[13px] group-hover:translate-x-0.5 transition-transform duration-300"
-                    style={{ color: v.color + '50' }}>
-                    →
-                  </span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {/* Quote card */}
             <div data-anim className="mt-auto rounded-2xl p-6 relative overflow-hidden"

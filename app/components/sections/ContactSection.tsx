@@ -82,8 +82,8 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
           </h2>
         </div>
 
-        {/* Two-column body */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_380px] gap-6 md:flex-1 md:min-h-0">
+        {/* Two-column body: stacked through tablet, splits at desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:flex-1 lg:min-h-0">
 
           {/* LEFT — location card */}
           <div data-anim className="glass-card rounded-2xl relative overflow-hidden flex flex-col">
@@ -97,7 +97,7 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
             <div className="absolute pointer-events-none"
               style={{ top: '42%', left: '50%', transform: 'translate(-50%,-50%)', width: 380, height: 380, background: 'radial-gradient(circle, rgba(255,79,216,0.18) 0%, transparent 65%)' }} />
 
-            <div className="relative z-10 flex flex-col h-full p-6 md:p-8 gap-6">
+            <div className="relative z-10 flex flex-col h-full p-5 md:p-8 gap-6">
 
               <div>
                 <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-2"

@@ -14,6 +14,10 @@
 
   --font-heading: var(--font-montserrat), sans-serif;
   --font-body:    var(--font-inter), system-ui, sans-serif;
+
+  /* Breakpoints — extends Tailwind defaults (sm:640 md:768 lg:1024 xl:1280 2xl:1536) */
+  --breakpoint-tablet: 820px;
+  --breakpoint-xs: 430px;   /* "Large Mobile" per user's own terminology — reused below */
 }
 
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }

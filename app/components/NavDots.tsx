@@ -16,8 +16,8 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
 
   return (
     <>
-      {/* Desktop: vertical dots on right side */}
-      <div className="hidden md:flex fixed right-[clamp(16px,3vw,34px)] top-1/2 -translate-y-1/2 z-40 flex-col gap-3.5">
+      {/* Desktop (≥1024px): vertical dots on right side */}
+      <div className="hidden lg:flex fixed right-[clamp(16px,3vw,34px)] top-1/2 -translate-y-1/2 z-40 flex-col gap-3.5">
         {Array.from({ length: N }, (_, i) => (
           <button
             key={i}
@@ -30,9 +30,9 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
         ))}
       </div>
 
-      {/* Mobile: horizontal bottom nav bar */}
+      {/* Mobile + tablet (<1024px): horizontal bottom nav bar */}
       <nav
-        className="flex md:hidden fixed bottom-0 left-0 right-0 z-50 items-stretch justify-around"
+        className="flex lg:hidden fixed bottom-0 left-0 right-0 z-50 items-stretch justify-around"
         style={{
           background: 'rgba(5,5,20,0.94)',
           backdropFilter: 'blur(24px)',

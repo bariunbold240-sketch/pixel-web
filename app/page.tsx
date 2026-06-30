@@ -13,6 +13,7 @@ import WorkSection from './components/sections/WorkSection'
 import PackagesSection from './components/sections/PackagesSection'
 import ContactSection from './components/sections/ContactSection'
 import { N } from './data'
+import { useBreakpoint } from './hooks/useBreakpoint'
 
 export default function Page() {
   const [cur, setCur] = useState(0)
@@ -24,8 +25,11 @@ export default function Page() {
   const hintHiddenRef = useRef(false)
   const curRef = useRef(0)
   const reducedRef = useRef(false)
+  const { isMobile } = useBreakpoint()
+  const isMobileRef = useRef(false)
 
   useEffect(() => { curRef.current = cur }, [cur])
+  useEffect(() => { isMobileRef.current = isMobile }, [isMobile])
 
   useEffect(() => {
     reducedRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -69,7 +73,7 @@ export default function Page() {
     n = Math.max(0, Math.min(N - 1, n))
 
     // Mobile: all panels are visible — just scroll to the section
-    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches) {
+    if (isMobileRef.current) {
       if (n === curRef.current) return
       curRef.current = n
       flushSync(() => { setCur(n); setVizCur(n) })
@@ -119,8 +123,7 @@ export default function Page() {
 
   // Mobile: track scroll position to highlight correct nav dot
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (!window.matchMedia('(max-width: 767px)').matches) return
+    if (!isMobile) return
     let rafId: number
     const onScroll = () => {
       cancelAnimationFrame(rafId)
@@ -139,7 +142,7 @@ export default function Page() {
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(rafId) }
-  }, [])
+  }, [isMobile])
 
   // Hero parallax
   useEffect(() => {
