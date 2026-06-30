@@ -16,6 +16,7 @@ import { N } from './data'
 
 export default function Page() {
   const [cur, setCur] = useState(0)
+  const [vizCur, setVizCur] = useState(0)  // scroll-based nav highlight for mobile
   const [loadingDone, setLoadingDone] = useState(false)
   const hintRef = useRef<HTMLDivElement>(null)
   const panelRefs = useRef<(HTMLElement | null)[]>([])
@@ -66,11 +67,21 @@ export default function Page() {
 
   const go = useCallback((n: number, dirHint?: number) => {
     n = Math.max(0, Math.min(N - 1, n))
+
+    // Mobile: all panels are visible — just scroll to the section
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches) {
+      if (n === curRef.current) return
+      curRef.current = n
+      flushSync(() => { setCur(n); setVizCur(n) })
+      hideHint()
+      panelRefs.current[n]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+
     if (lockRef.current || n === curRef.current) return
     lockRef.current = true
 
     const dir = dirHint !== undefined ? dirHint : (n > curRef.current ? 1 : -1)
-    const oldPanel = panelRefs.current[curRef.current]
     const newPanel = panelRefs.current[n]
     const reduced = reducedRef.current
 
@@ -105,6 +116,30 @@ export default function Page() {
       clearTimeout(timer)
     }
   }, [go])
+
+  // Mobile: track scroll position to highlight correct nav dot
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!window.matchMedia('(max-width: 767px)').matches) return
+    let rafId: number
+    const onScroll = () => {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        const vh = window.innerHeight
+        let bestIdx = 0
+        let bestOverlap = -Infinity
+        panelRefs.current.forEach((el, i) => {
+          if (!el) return
+          const { top, bottom } = el.getBoundingClientRect()
+          const overlap = Math.max(0, Math.min(bottom, vh) - Math.max(top, 0))
+          if (overlap > bestOverlap) { bestOverlap = overlap; bestIdx = i }
+        })
+        setVizCur(bestIdx)
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(rafId) }
+  }, [])
 
   // Hero parallax
   useEffect(() => {
@@ -144,7 +179,7 @@ export default function Page() {
         <ContactSection   active={cur === 5} sectionRef={ref(5)} />
       </div>
 
-      <NavDots cur={cur} go={go} />
+      <NavDots cur={cur} vizCur={vizCur} go={go} />
     </>
   )
 }

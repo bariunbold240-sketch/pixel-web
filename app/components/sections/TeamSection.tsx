@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useSectionAnim } from '../useSectionAnim'
+import TypewriterText from '../TypewriterText'
+import { useLang } from '../../context/LangContext'
 
 const GRAIN_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E")`
 
@@ -123,6 +125,8 @@ interface TeamSectionProps {
 
 export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
   const innerRef   = useSectionAnim(active)
+  const { lang } = useLang()
+  const mn = lang === 'mn'
   const [idx, setIdx] = useState(0)
   const imgRefs    = useRef<(HTMLImageElement | null)[]>([])
   const prevIdxRef = useRef(0)
@@ -177,12 +181,14 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
               className="text-[9px] tracking-[0.46em] uppercase font-semibold"
               style={{ color: 'rgba(255,79,216,0.62)' }}
             >
-              03 / Туршлага
+              <TypewriterText text={mn ? '03 / Туршлага' : '03 / Experience'} active={active} speed={22} delay={100} />
             </p>
           </div>
           <h2 className="text-[clamp(28px,4.2vw,60px)] font-black uppercase leading-[0.87] tracking-[-0.03em]">
-            Бидний{' '}
-            <em className="gradient-text not-italic">Туршлага</em>
+            <TypewriterText text={mn ? 'Бидний ' : 'Our '} active={active} speed={45} delay={320} />
+            <em className="gradient-text not-italic">
+              <TypewriterText text={mn ? 'Туршлага' : 'Experience'} active={active} speed={55} delay={650} />
+            </em>
           </h2>
         </div>
 
@@ -346,7 +352,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
             className="text-[10px] uppercase tracking-[0.18em]"
             style={{ color: 'rgba(184,194,221,0.26)' }}
           >
-            Туршлага
+            {mn ? 'Туршлага' : 'Experience'}
           </span>
         </div>
       </div>

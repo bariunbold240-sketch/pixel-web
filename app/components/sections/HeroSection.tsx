@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import TypewriterText from '../TypewriterText'
+import { useLang } from '../../context/LangContext'
 
 interface HeroSectionProps {
   active: boolean
@@ -9,14 +11,16 @@ interface HeroSectionProps {
 }
 
 const STATS = [
-  { value: '120+', label: 'ажилттай төсөл' },
-  { value: '50+',  label: 'клиент' },
-  { value: '24/7', label: 'төлөвлөгөө' },
-  { value: '100%', label: 'сэтгэл ханамж' },
+  { value: '120+', mn: 'ажилттай төсөл',  en: 'completed projects' },
+  { value: '50+',  mn: 'клиент',           en: 'clients'            },
+  { value: '24/7', mn: 'төлөвлөгөө',      en: 'plans'              },
+  { value: '100%', mn: 'сэтгэл ханамж',   en: 'satisfaction'       },
 ]
 
 export default function HeroSection({ active, ready, sectionRef }: HeroSectionProps) {
   const innerRef = useRef<HTMLDivElement>(null)
+  const { lang } = useLang()
+  const mn = lang === 'mn'
 
   useEffect(() => {
     if (!active || !ready || !innerRef.current) return
@@ -105,12 +109,12 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
 
         {/* ── Main content ─────────────────────────────── */}
         <div className="flex-1 flex flex-col justify-start
-                        pl-[clamp(24px,6vw,96px)]
+                        px-[clamp(24px,6vw,96px)]
                         pt-20 md:pt-[clamp(200px,27vh,290px)]">
 
           <div
             id="heroTitle"
-            className="hero-title text-[clamp(64px,13vw,180px)] font-black leading-[0.82] tracking-[-0.04em] select-none"
+            className="hero-title text-[clamp(52px,13vw,180px)] font-black leading-[0.82] tracking-[-0.04em] select-none"
           >
             {'PIXEL'.split('').map((ch, i) => (
               <span key={i} className="ch">{ch}</span>
@@ -118,21 +122,24 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
           </div>
 
           <h1 className="eyebrow mt-4 font-black leading-[0.9] uppercase text-[clamp(14px,2.2vw,28px)] text-pxwhite">
-            ЗӨВ МЭССЭЖ<b className="text-hot"> ЗӨВ </b>ЗАХ ЗЭЭЛ
+            {mn ? <>ЗӨВ МЭССЭЖ<b className="text-hot"> ЗӨВ </b>ЗАХ ЗЭЭЛ</> : <>RIGHT MESSAGE<b className="text-hot"> RIGHT </b>MARKET</>}
           </h1>
 
           <p className="hero-sub mt-6 text-mute text-[clamp(13px,1.1vw,16px)] max-w-[520px] leading-[1.65]">
-            Бид брэндийн үнэ цэнийг бүтээж, дигитал орчинд
-            <br className="hidden sm:block" />
-            тодорхой үр дүн гаргахад тань тусалдаг.
+            <TypewriterText
+              text={mn ? 'Бид брэндийн үнэ цэнийг бүтээж, дигитал орчинд тодорхой үр дүн гаргахад тань тусалдаг.' : 'We build brand value and help you achieve clear results in the digital world.'}
+              active={active && ready}
+              speed={22}
+              delay={1800}
+            />
           </p>
 
           <div className="hero-btns flex flex-wrap items-center gap-4 mt-8">
             <button className="rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 transition-opacity">
-              БИДНИЙ ТУХАЙ
+              {mn ? 'БИДНИЙ ТУХАЙ' : 'ABOUT US'}
             </button>
             <button className="rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 transition-colors">
-              БАГЦ
+              {mn ? 'БАГЦ' : 'PACKAGES'}
             </button>
           </div>
         </div>
@@ -143,7 +150,7 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
             <div
               key={stat.value}
               className={[
-                'stat-cell flex flex-col items-center justify-center gap-2 py-6 md:py-0 md:h-[130px]',
+                'stat-cell flex flex-col items-center justify-center gap-2 py-4 md:py-0 md:h-[130px]',
                 i % 2 === 0 ? 'border-r border-hot' : '',
                 i < 2 ? 'border-b md:border-b-0 border-hot' : '',
                 i < STATS.length - 1 ? 'md:border-r md:border-hot' : '',
@@ -153,7 +160,7 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
                 {stat.value}
               </span>
               <span className="text-[clamp(10px,0.9vw,13px)] text-mute tracking-wide text-center px-2">
-                {stat.label}
+                {mn ? stat.mn : stat.en}
               </span>
             </div>
           ))}

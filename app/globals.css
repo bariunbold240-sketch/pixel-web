@@ -77,7 +77,21 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     transition: none !important;
     min-height: 100svh;
     display: flex !important;
-    overflow: hidden;
+    overflow-x: clip;    /* clip avoids the overflow-y:visible→auto browser upgrade */
+    overflow-y: visible;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    padding-bottom: 80px; /* room for bottom nav + breathing space */
+  }
+  .panel-inner {
+    height: auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+  }
+  /* tighten glow orbs on mobile to avoid wide overflow */
+  .glow-orb {
+    max-width: 80vw;
+    max-height: 80vw;
   }
 }
 
@@ -173,16 +187,6 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
 }
 .member:hover::before { opacity: 1; }
 
-/* ── Pricing featured badge ──────────────────────────── */
-.pack-featured::after {
-  content: "САНАЛ БОЛГОХ";
-  position: absolute;
-  top: 16px; right: 16px;
-  font-size: 9.5px; font-weight: 800; letter-spacing: 0.12em;
-  padding: 5px 11px; border-radius: 20px;
-  background: linear-gradient(90deg, #6f63ff, #ff4fd8);
-  color: #fff;
-}
 
 /* ── Nav dot ─────────────────────────────────────────── */
 .dot-btn.on {
@@ -241,8 +245,160 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
 /* ── Marquee strips ──────────────────────────────────── */
 @keyframes marqueeLeft  { to { transform: translateX(-50%); } }
 @keyframes marqueeRight { from { transform: translateX(-50%); } to { transform: translateX(0%); } }
+@keyframes iconScroll   { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .marquee-left  { animation: marqueeLeft  32s linear infinite; animation-play-state: var(--marquee-play, running); }
 .marquee-right { animation: marqueeRight 32s linear infinite; animation-play-state: var(--marquee-play, running); }
+
+/* ── Typewriter cursor ───────────────────────────────── */
+@keyframes twBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.tw-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.82em;
+  background: currentColor;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: twBlink 0.75s step-start infinite;
+}
+.tw-cursor--done {
+  animation: none;
+  opacity: 0;
+}
+
+/* ── Tech strip ──────────────────────────────────────── */
+.tech-strip-track { animation: iconScroll 300s linear infinite; width: max-content; }
+.tech-strip-wrap:hover .tech-strip-track { animation-play-state: paused; }
+
+@keyframes techShimmer {
+  0%   { transform: translateX(-120%) skewX(-12deg); }
+  100% { transform: translateX(320%)  skewX(-12deg); }
+}
+
+.tech-icon-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 10px 16px 8px;
+  min-width: 88px;
+  border-radius: 22px;
+  background: linear-gradient(162deg, rgba(28,32,62,0.84) 0%, rgba(10,12,30,0.93) 100%);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.09),
+    inset 0 -1px 0 rgba(0,0,0,0.25),
+    0 2px 6px rgba(0,0,0,0.22),
+    0 8px 28px rgba(0,0,0,0.48),
+    0 24px 56px rgba(0,0,0,0.18);
+  cursor: default;
+  overflow: hidden;
+  transition:
+    transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.38s ease,
+    border-color 0.38s ease;
+  flex-shrink: 0;
+}
+
+/* top-half glass shine */
+.tech-icon-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 52%;
+  border-radius: 22px 22px 50% 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.065) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* shimmer sweep on hover */
+.tech-icon-card::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+  transform: translateX(-120%) skewX(-12deg);
+  pointer-events: none;
+  z-index: 3;
+}
+.tech-icon-card:hover::after {
+  animation: techShimmer 0.65s ease forwards;
+}
+
+.tech-icon-card:hover {
+  transform: scale(1.08) translateY(-8px);
+  border-color: rgba(255,255,255,0.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.13),
+    inset 0 -1px 0 rgba(0,0,0,0.25),
+    0 4px 10px rgba(0,0,0,0.32),
+    0 18px 52px rgba(0,0,0,0.58),
+    0 0 0 1px rgba(111,99,255,0.22),
+    0 0 32px rgba(111,99,255,0.16),
+    0 0 72px rgba(111,99,255,0.07);
+}
+
+/* inner top glow (accent color via inline bg) */
+.tech-icon-card .tech-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.38s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.tech-icon-card:hover .tech-glow { opacity: 1; }
+
+/* icon container */
+.tech-icon-img-wrap {
+  position: relative;
+  z-index: 4;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.055);
+  margin-bottom: 7px;
+  transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1);
+}
+.tech-icon-card:hover .tech-icon-img-wrap {
+  transform: scale(1.06);
+}
+
+/* divider line */
+.tech-icon-divider {
+  width: 100%;
+  height: 1px;
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+/* label */
+.tech-icon-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  z-index: 4;
+  white-space: nowrap;
+  opacity: 0.72;
+  transition: opacity 0.3s ease;
+}
+.tech-icon-card:hover .tech-icon-label { opacity: 1; }
 
 /* ── Scrollbar hide utility ─────────────────────────── */
 .no-scrollbar::-webkit-scrollbar { display: none; }

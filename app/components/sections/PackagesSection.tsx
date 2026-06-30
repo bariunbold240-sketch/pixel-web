@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { packagePlans } from '../../data/siteContent'
 import { useSectionAnim } from '../useSectionAnim'
+import TypewriterText from '../TypewriterText'
+import { useLang } from '../../context/LangContext'
 
 interface PackagesSectionProps {
   active: boolean
@@ -11,8 +13,22 @@ interface PackagesSectionProps {
 
 export default function PackagesSection({ active, sectionRef }: PackagesSectionProps) {
   const innerRef = useSectionAnim(active)
+  const { lang } = useLang()
+  const mn = lang === 'mn'
   const [page, setPage] = useState(0)
-  const visiblePlans = packagePlans.slice(page * 4, page * 4 + 4)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    setIsMobile(mq.matches)
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  // Mobile: show all 8 plans at once. Desktop: paginate 4 per page.
+  const plansToShow = isMobile ? packagePlans : packagePlans.slice(page * 4, page * 4 + 4)
+  const indexOffset = isMobile ? 0 : page * 4
 
   const sectionEl    = useRef<HTMLElement | null>(null)
   const gridRef      = useRef<HTMLDivElement | null>(null)
@@ -40,7 +56,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
 
   useEffect(() => {
     const el = sectionEl.current
-    if (!el) return
+    if (!el || isMobile) return  // wheel pagination not needed on mobile
 
     const onWheel = (e: WheelEvent) => {
       if (cooldown.current) { e.stopPropagation(); return }
@@ -61,7 +77,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
 
     el.addEventListener('wheel', onWheel, { passive: false })
     return () => el.removeEventListener('wheel', onWheel)
-  }, [])  // mount once; uses refs to read latest page
+  }, [isMobile])  // re-run when mobile state resolves
 
   return (
     <section
@@ -81,15 +97,18 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
         {/* Header */}
         <div className="text-center mb-4 mt-8">
           <p data-anim className="text-[11px] font-bold tracking-[0.22em] uppercase text-hot mb-3">
-            05 — Багц
+            <TypewriterText text={mn ? '05 — Багц' : '05 — Packages'} active={active} speed={22} delay={150} />
           </p>
           <h2 data-anim className="text-[clamp(30px,4vw,56px)] font-black uppercase pt-5 leading-[0.9] tracking-[-0.02em]">
-            Багц, <span className="gradient-text">Төлөвлөгөө</span>
+            <TypewriterText text={mn ? 'Багц, ' : 'Packages, '} active={active} speed={45} delay={380} />
+            <span className="gradient-text">
+              <TypewriterText text={mn ? 'Төлөвлөгөө' : 'Plans'} active={active} speed={52} delay={670} />
+            </span>
           </h2>
         </div>
 
-        {/* Page toggle */}
-        <div data-anim className="flex justify-center gap-2 pt-5 mb-4">
+        {/* Page toggle — desktop only; mobile shows all cards at once */}
+        <div data-anim className="hidden md:flex justify-center gap-2 pt-5 mb-4">
           {[0, 1].map(p => (
             <button
               key={p}
@@ -101,23 +120,22 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                   : { background: 'rgba(111,99,255,0.1)', color: 'rgba(184,194,221,0.6)', border: '1px solid rgba(111,99,255,0.2)' }
               }
             >
-              {p === 0 ? 'Багц - 1' : 'Багц - 2'}
+              {p === 0 ? (mn ? 'Багц - 1' : 'Package 1') : (mn ? 'Багц - 2' : 'Package 2')}
             </button>
           ))}
         </div>
 
-        {/* Cards: 4 per row */}
+        {/* Cards: all on mobile scroll, 4-column paginated on desktop */}
         <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-5">
-          {visiblePlans.map((plan, i) => {
-            const globalIndex = page * 4 + i
+          {plansToShow.map((plan, i) => {
+            const globalIndex = indexOffset + i
             const isFeatured = !!plan.featured
             return (
               <div
                 key={globalIndex}
                 data-anim
                 data-card
-                className={`relative flex flex-col overflow-hidden rounded-xl cursor-default
-                  ${isFeatured ? 'pack-featured' : ''}`}
+                className="relative flex flex-col overflow-hidden rounded-xl cursor-default"
                 style={
                   isFeatured
                     ? {
@@ -138,7 +156,14 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                     style={{ background: 'linear-gradient(90deg,#6f63ff,#ff4fd8)' }} />
                 )}
 
-                <div className="p-4 flex flex-col h-full">
+                <div className="p-2.5 md:p-4 flex flex-col h-full">
+                  {/* Featured badge — in-flow so it doesn't overlap plan name */}
+                  {isFeatured && (
+                    <div className="self-start text-[7px] font-black tracking-wider px-2 py-0.5 rounded-full mb-2"
+                      style={{ background: 'linear-gradient(90deg,#6f63ff,#ff4fd8)', color: '#fff' }}>
+                      {mn ? 'САНАЛ БОЛГОХ' : 'RECOMMENDED'}
+                    </div>
+                  )}
                   {/* Name + Price */}
                   <div className="mb-3 pb-3 border-b border-line/40">
                     <div className="flex items-center justify-between mb-1">
@@ -163,7 +188,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                     {plan.features.map((f, j) => {
                       const included = f.value !== '—'
                       return (
-                        <li key={j} className="flex items-center justify-between gap-1 text-[15px]">
+                        <li key={j} className="flex items-center justify-between gap-1 text-[11px] md:text-[15px]">
                           <span className={`flex items-center gap-1.5 min-w-0 ${included ? 'text-mute/80' : 'text-mute/25'}`}>
                             <span className="shrink-0 w-3 h-3 rounded-full flex items-center justify-center text-[7px]"
                               style={{
@@ -179,7 +204,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                             <span className="truncate">{f.label}</span>
                           </span>
                           <span
-                            className="shrink-0 font-bold text-[15px] ml-1"
+                            className="shrink-0 font-bold text-[11px] md:text-[15px] ml-1"
                             style={{ color: included ? (isFeatured ? '#ff4fd8' : '#f7f9ff') : 'rgba(184,194,221,0.2)' }}
                           >
                             {f.value}
@@ -201,10 +226,10 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
         <div className="mt-6 pt-4 border-t border-line/30 flex items-center justify-between">
           <span className="section-num">05 / 06</span>
           <p className="text-[11px] text-mute/50 text-center">
-            Холбоо барих:{' '}
+            {mn ? 'Холбоо барих:' : 'Contact:'}{' '}
             <span className="text-hot font-bold">7270 3873</span>
           </p>
-          <span className="text-[10px] text-mute/40 uppercase tracking-[0.18em]">Багц</span>
+          <span className="text-[10px] text-mute/40 uppercase tracking-[0.18em]">{mn ? 'Багц' : 'Packages'}</span>
         </div>
       </div>
     </section>

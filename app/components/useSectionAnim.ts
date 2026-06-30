@@ -3,11 +3,15 @@ import { useEffect, useRef } from 'react'
 
 export function useSectionAnim(active: boolean) {
   const ref = useRef<HTMLDivElement>(null)
+  const hasAnimated = useRef(false)
 
   useEffect(() => {
     if (!ref.current) return
     const el = ref.current
     const mobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+
+    // Mobile: once animated, skip re-runs so active-change never re-hides items
+    if (mobile && hasAnimated.current) return
 
     if (!active && !mobile) return
 
@@ -16,6 +20,7 @@ export function useSectionAnim(active: boolean) {
     let alive = true
 
     const run = () => {
+      hasAnimated.current = true  // claim slot before async import
       import('gsap').then(({ default: gsap }) => {
         if (!alive) return
 
@@ -90,7 +95,7 @@ export function useSectionAnim(active: boolean) {
     if (mobile) {
       obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) { obs!.disconnect(); run() } },
-        { threshold: 0.18, rootMargin: '0px 0px -40px 0px' },
+        { threshold: 0.12, rootMargin: '0px 0px -16px 0px' },
       )
       obs.observe(el.closest('section') ?? el)
     } else {

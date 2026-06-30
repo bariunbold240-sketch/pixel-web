@@ -1,20 +1,22 @@
 'use client'
 
 import { useSectionAnim } from '../useSectionAnim'
+import TypewriterText from '../TypewriterText'
+import { useLang } from '../../context/LangContext'
 
-const VISION_TEXT =
-  'Бид байгуулагуудын зөв санаа, зөв стратегийг зөв зах зээлд хүргэж, маркетингийг зардал бус өсөлтийн бодит хөдөлгөгч хүч болгодог итгэлтэй түнш агентлаг байхыг зорьдог.'
+const VISION_MN = 'Бид байгуулагуудын зөв санаа, зөв стратегийг зөв зах зээлд хүргэж, маркетингийг зардал бус өсөлтийн бодит хөдөлгөгч хүч болгодог итгэлтэй түнш агентлаг байхыг зорьдог.'
+const VISION_EN = 'We are a trusted partner agency that delivers the right message, the right strategy to the right market — turning marketing from a cost into a real driver of growth.'
 
 const VALUES = [
-  { text: 'Зөв мессежийг зөв газарт хүргэнэ', color: '#6f63ff' },
-  { text: 'Итгэл ба ёс зүйг эрхэмлэнэ',        color: '#ff4fd8' },
-  { text: 'Хамтын өсөлтийг бүтээнэ',            color: '#15a59a' },
+  { mn: 'Зөв мессежийг зөв газарт хүргэнэ', en: 'Deliver the right message to the right place', color: '#6f63ff' },
+  { mn: 'Итгэл ба ёс зүйг эрхэмлэнэ',        en: 'Uphold trust and ethics',                        color: '#ff4fd8' },
+  { mn: 'Хамтын өсөлтийг бүтээнэ',            en: 'Build shared growth',                            color: '#15a59a' },
 ]
 
 const STATS = [
-  { n: '120+', l: 'Дууссан төсөл',   color: '#6f63ff' },
-  { n: '50+',  l: 'Сэтгэл ханамж',   color: '#ff4fd8' },
-  { n: '4+',   l: 'Жилийн туршлага', color: '#15a59a' },
+  { n: '120+', mn: 'Дууссан төсөл',   en: 'Completed Projects', color: '#6f63ff' },
+  { n: '50+',  mn: 'Сэтгэл ханамж',   en: 'Satisfied Clients',  color: '#ff4fd8' },
+  { n: '4+',   mn: 'Жилийн туршлага', en: 'Years Experience',   color: '#15a59a' },
 ]
 
 interface VisionSectionProps {
@@ -24,6 +26,8 @@ interface VisionSectionProps {
 
 export default function VisionSection({ active, sectionRef }: VisionSectionProps) {
   const innerRef = useSectionAnim(active)
+  const { lang } = useLang()
+  const mn = lang === 'mn'
 
   return (
     <section className={`panel${active ? ' active' : ''}`} ref={sectionRef}>
@@ -43,11 +47,13 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
         <div className="mb-10 flex items-end justify-between">
           <div>
             <p data-anim className="text-[11px] font-bold tracking-[0.22em] uppercase text-hot mb-3">
-              02 — Алсын Харааа · Үнэт Зүйл
+              <TypewriterText text={mn ? '02 — Алсын Харааа · Үнэт Зүйл' : '02 — Vision · Values'} active={active} speed={22} delay={150} />
             </p>
             <h2 data-anim className="text-[clamp(32px,4.5vw,60px)] font-black uppercase leading-[0.9] tracking-[-0.02em]">
-              Алсын Харааа,{' '}
-              <span className="gradient-text">Үнэт Зүйл</span>
+              <TypewriterText text={mn ? 'Алсын Харааа, ' : 'Vision, '} active={active} speed={42} delay={400} />
+              <span className="gradient-text">
+                <TypewriterText text={mn ? 'Үнэт Зүйл' : 'Values'} active={active} speed={50} delay={1020} />
+              </span>
             </h2>
           </div>
 
@@ -73,7 +79,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
               style={{ background: 'linear-gradient(90deg, #6f63ff, #ff4fd8, transparent)' }} />
 
             {/* Decorative large quote */}
-            <div className="absolute top-2 right-5 text-[130px] font-black leading-none pointer-events-none select-none"
+            <div className="hidden md:block absolute top-2 right-5 text-[130px] font-black leading-none pointer-events-none select-none"
               style={{ color: 'rgba(111,99,255,0.06)', fontFamily: 'Georgia, serif', lineHeight: 1 }}>
               "
             </div>
@@ -89,14 +95,17 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
                 </svg>
               </div>
               <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: 'rgba(184,194,221,0.5)' }}>
-                Алсын Харааа
+                {mn ? 'Алсын Харааа' : 'Vision'}
               </span>
             </div>
 
-            {/* Body text — NOT uppercase */}
+            {/* Body text */}
             <p className="text-[clamp(14px,1.35vw,17px)] leading-[1.9] font-medium flex-1 relative z-10"
               style={{ color: 'rgba(184,194,221,0.85)' }}>
-              {VISION_TEXT}
+              <TypewriterText
+                text={mn ? VISION_MN : VISION_EN}
+                active={active} speed={9} delay={1500}
+              />
             </p>
 
             {/* Divider + stats */}
@@ -108,7 +117,9 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
                     style={{ color: s.color }}>
                     {s.n}
                   </p>
-                  <p className="text-[11px] tracking-wide" style={{ color: 'rgba(184,194,221,0.5)' }}>{s.l}</p>
+                  <p className="text-[11px] tracking-wide" style={{ color: 'rgba(184,194,221,0.5)' }}>
+                    {mn ? s.mn : s.en}
+                  </p>
                 </div>
               ))}
             </div>
@@ -122,7 +133,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
               <div className="w-1 h-5 rounded-full"
                 style={{ background: 'linear-gradient(180deg, #6f63ff, #ff4fd8)' }} />
               <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: 'rgba(184,194,221,0.5)' }}>
-                Үнэт Зүйл
+                {mn ? 'Үнэт Зүйл' : 'Values'}
               </span>
             </div>
 
@@ -133,13 +144,11 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
                 className="glass-card rounded-2xl px-5 py-5 group cursor-default relative overflow-hidden"
                 style={{ borderLeft: `2px solid ${v.color}55` }}
               >
-                {/* Hover glow */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"
                   style={{ background: `radial-gradient(circle at 25% 50%, ${v.color}0e, transparent 70%)`,
                     transition: 'opacity 0.4s' }} />
 
                 <div className="flex items-center gap-4 relative z-10">
-                  {/* Colored number badge */}
                   <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-[11px] font-black"
                     style={{ background: `linear-gradient(135deg,${v.color}28,${v.color}0e)`,
                       border: `1px solid ${v.color}30`, color: v.color }}>
@@ -148,7 +157,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
 
                   <p className="flex-1 text-[clamp(13px,1.05vw,14px)] font-medium leading-[1.55]"
                     style={{ color: 'rgba(247,249,255,0.85)' }}>
-                    {v.text}
+                    {mn ? v.mn : v.en}
                   </p>
 
                   <span className="shrink-0 text-[13px] group-hover:translate-x-0.5 transition-transform duration-300"
@@ -164,7 +173,6 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
               style={{ background: 'linear-gradient(135deg,rgba(111,99,255,0.12),rgba(255,79,216,0.07))',
                 border: '1px solid rgba(111,99,255,0.18)' }}>
 
-              {/* Large open-quote */}
               <div className="absolute top-1 left-4 text-[60px] font-black leading-none pointer-events-none select-none"
                 style={{ color: 'rgba(111,99,255,0.22)', fontFamily: 'Georgia, serif', lineHeight: 1 }}>
                 "
@@ -172,7 +180,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
 
               <p className="text-[clamp(12px,0.95vw,14px)] leading-[1.75] italic relative z-10 mt-5 pl-1"
                 style={{ color: 'rgba(247,249,255,0.7)' }}>
-                Зөв мессеж · Зөв зах зээл
+                {mn ? 'Зөв мессеж · Зөв зах зээл' : 'Right Message · Right Market'}
               </p>
 
               <div className="flex items-center gap-3 mt-3 relative z-10">
@@ -191,7 +199,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
           style={{ borderTop: '1px solid rgba(111,99,255,0.12)' }}>
           <span className="section-num">02 / 06</span>
           <span className="text-[10px] uppercase tracking-[0.18em]" style={{ color: 'rgba(184,194,221,0.35)' }}>
-            Алсын Харааа
+            {mn ? 'Алсын Харааа' : 'Vision'}
           </span>
         </div>
       </div>
