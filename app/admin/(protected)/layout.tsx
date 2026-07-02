@@ -6,19 +6,21 @@ export default function AdminProtectedLayout({ children }: { children: React.Rea
   return (
     <>
       <AdminScrollUnlock />
-      <div className="flex min-h-screen flex-col lg:flex-row" style={{ background: '#05050d' }}>
+      <div className="flex min-h-dvh flex-col overflow-hidden lg:h-screen lg:flex-row" style={{ background: '#05050d' }}>
         {/* Mobile top nav */}
         <AdminMobileNav />
 
-        {/* Desktop sidebar — sticky so it stays visible while content scrolls */}
-        <div className="hidden lg:block shrink-0 sticky top-0 h-screen">
+        {/* Desktop sidebar */}
+        <div className="hidden lg:block">
           <AdminSidebar />
         </div>
 
-        {/* Page content — grows and scrolls naturally */}
-        <main className="flex-1 min-w-0">
-          {children}
-        </main>
+        {/* Page content */}
+        <div className="flex min-w-0 min-h-0 flex-1 flex-col overflow-hidden">
+          <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden">
+            {children}
+          </main>
+        </div>
       </div>
     </>
   )

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Zap, Layers, Boxes, Rocket, Gem, Flame, Shield, Crown, type LucideIcon } from 'lucide-react'
-import { packagePlans } from '../../data/siteContent'
+import { packagePlans as DEFAULT_PACKAGE_PLANS, type PackagePlan } from '../../data/siteContent'
 import { useSectionAnim } from '../useSectionAnim'
 import TypewriterText from '../TypewriterText'
 import { useLang } from '../../context/LangContext'
@@ -19,18 +19,90 @@ interface PackagesSectionProps {
 // One icon per plan, purely decorative — order matches packagePlans.
 const PLAN_ICONS: LucideIcon[] = [Zap, Layers, Boxes, Rocket, Gem, Flame, Shield, Crown]
 
+interface PackageRecord {
+  id: number
+  name: string
+  price: string
+  featured: boolean
+  features: unknown
+  order: number
+}
+
+function normalizeFeatures(features: unknown): PackagePlan['features'] {
+  if (!Array.isArray(features)) return []
+
+  return features
+    .map((feature): PackagePlan['features'][number] | null => {
+      if (!feature || typeof feature !== 'object') return null
+
+      const candidate = feature as { label?: unknown; value?: unknown }
+      if (typeof candidate.label !== 'string' || typeof candidate.value !== 'string') return null
+
+      const label = candidate.label.trim()
+      const value = candidate.value.trim()
+      if (!label && !value) return null
+
+      return { label, value }
+    })
+    .filter((feature): feature is PackagePlan['features'][number] => feature !== null)
+}
+
+function buildPlans(records: PackageRecord[]): PackagePlan[] {
+  if (records.length === 0) return DEFAULT_PACKAGE_PLANS
+
+  return records.map((record, index) => {
+    const fallback = DEFAULT_PACKAGE_PLANS[index % DEFAULT_PACKAGE_PLANS.length]
+    const features = normalizeFeatures(record.features)
+
+    return {
+      name: record.name?.trim() || fallback.name,
+      price: record.price?.trim() || fallback.price,
+      featured: record.featured ?? fallback.featured ?? false,
+      features: features.length > 0 ? features : fallback.features,
+    }
+  })
+}
+
 export default function PackagesSection({ active, sectionRef }: PackagesSectionProps) {
   const innerRef = useSectionAnim(active)
   const { lang } = useLang()
   const mn = lang === 'mn'
   const [page, setPage] = useState(0)
+  const [plans, setPlans] = useState<PackagePlan[]>(DEFAULT_PACKAGE_PLANS)
   // Deck-vs-scroll nav mode is keyed to the same 767px line as page.tsx/globals.css —
   // intentionally not the tablet/lg lines used by the grid-column fix below.
   const { isMobile } = useBreakpoint()
 
-  // Mobile: show all 8 plans at once. Desktop: paginate 4 per page.
-  const plansToShow = isMobile ? packagePlans : packagePlans.slice(page * 4, page * 4 + 4)
-  const indexOffset = isMobile ? 0 : page * 4
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadPackages() {
+      try {
+        const res = await fetch('/api/packages', { cache: 'no-store' })
+        if (!res.ok) return
+
+        const data = await res.json() as PackageRecord[]
+        const nextPlans = buildPlans(Array.isArray(data) ? data : [])
+        if (!cancelled && nextPlans.length > 0) {
+          setPlans(nextPlans)
+        }
+      } catch {
+        // Keep the built-in fallback plan set if the API is unavailable.
+      }
+    }
+
+    void loadPackages()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const pageSize = 4
+  const pageCount = isMobile ? 1 : Math.max(1, Math.ceil(plans.length / pageSize))
+  const activePage = Math.min(page, pageCount - 1)
+  const plansToShow = isMobile ? plans : plans.slice(activePage * pageSize, activePage * pageSize + pageSize)
+  const indexOffset = isMobile ? 0 : activePage * pageSize
 
   const sectionEl    = useRef<HTMLElement | null>(null)
   const gridRef      = useRef<HTMLDivElement | null>(null)
@@ -39,13 +111,18 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
   const cooldown     = useRef(false)
   const firstRender  = useRef(true)
 
-  useEffect(() => { pageRef.current = page }, [page])
+  useEffect(() => {
+    pageRef.current = activePage
+    if (page !== activePage) {
+      setPage(activePage)
+    }
+  }, [activePage, page])
 
   // Card entrance animation on page switch
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return }
-    const dir = page > prevPage.current ? 1 : -1
-    prevPage.current = page
+    const dir = activePage > prevPage.current ? 1 : -1
+    prevPage.current = activePage
     import('gsap').then(({ default: gsap }) => {
       const cards = gridRef.current?.querySelectorAll('[data-card]')
       if (!cards?.length) return
@@ -54,23 +131,23 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
         { opacity: 1, x: 0, scale: 1, duration: 0.55, stagger: 0.08, ease: 'power3.out', overwrite: true }
       )
     })
-  }, [page])
+  }, [activePage])
 
   useEffect(() => {
     const el = sectionEl.current
-    if (!el || isMobile) return  // wheel pagination not needed on mobile
+    if (!el || isMobile || pageCount <= 1) return  // wheel pagination not needed on mobile or single-page mode
 
     const onWheel = (e: WheelEvent) => {
       if (cooldown.current) { e.stopPropagation(); return }
 
-      if (e.deltaY > 0 && pageRef.current === 0) {
+      if (e.deltaY > 0 && pageRef.current < pageCount - 1) {
         e.stopPropagation()
-        setPage(1)
+        setPage((current) => Math.min(current + 1, pageCount - 1))
         cooldown.current = true
         setTimeout(() => { cooldown.current = false }, 1100)
-      } else if (e.deltaY < 0 && pageRef.current === 1) {
+      } else if (e.deltaY < 0 && pageRef.current > 0) {
         e.stopPropagation()
-        setPage(0)
+        setPage((current) => Math.max(current - 1, 0))
         cooldown.current = true
         setTimeout(() => { cooldown.current = false }, 1100)
       }
@@ -79,7 +156,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
 
     el.addEventListener('wheel', onWheel, { passive: false })
     return () => el.removeEventListener('wheel', onWheel)
-  }, [isMobile])  // re-run when mobile state resolves
+  }, [isMobile, pageCount])  // re-run when layout/page count resolves
 
   return (
     <section
@@ -116,11 +193,13 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
         </div>
 
         {/* Page toggle — floating segmented control, desktop only */}
-        <PricingToggle
-          page={page}
-          onChange={setPage}
-          labels={mn ? ['Онцго - 1', 'Бусад - 2'] : ['Package 1', 'Package 2']}
-        />
+        {pageCount > 1 && (
+          <PricingToggle
+            page={activePage}
+            onChange={setPage}
+            labels={Array.from({ length: pageCount }, (_, i) => String(i + 1).padStart(2, '0'))}
+          />
+        )}
 
         {/* Cards: swipeable carousel on small mobile, 2-up grid from 430px (tablet too), 4-col paginated on desktop */}
         <div

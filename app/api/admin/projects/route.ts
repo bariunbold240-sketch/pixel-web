@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { getSession } from '@/lib/auth'
+import { resolvePublicAsset } from '@/lib/project-assets'
 
 async function guard() {
   const s = await getSession()
@@ -9,7 +10,13 @@ async function guard() {
 
 export async function GET() {
   if (!await guard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const projects = await prisma.project.findMany({ orderBy: { order: 'asc' } })
+  const rawProjects = await prisma.project.findMany({ orderBy: { order: 'asc' } })
+  const projects = await Promise.all(
+    rawProjects.map(async (project) => ({
+      ...project,
+      image: await resolvePublicAsset(project.image),
+    })),
+  )
   return NextResponse.json(projects)
 }
 

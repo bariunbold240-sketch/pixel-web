@@ -7,7 +7,7 @@ import { useLang } from '../../context/LangContext'
 
 const GRAIN_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E")`
 
-const PHOTOS = [
+const DEFAULT_PHOTOS = [
   '/photo_2026-06-26_12-48-06.jpg',
   '/photo_2026-06-26_12-48-08.jpg',
   '/photo_2026-06-26_12-48-11.jpg',
@@ -152,13 +152,44 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
   const { lang } = useLang()
   const mn = lang === 'mn'
   const [idx, setIdx] = useState(0)
+  const [photos, setPhotos] = useState(DEFAULT_PHOTOS)
   const imgRefs    = useRef<(HTMLImageElement | null)[]>([])
   const prevIdxRef = useRef(0)
   const thumbRefs  = useRef<(HTMLButtonElement | null)[]>([])
+  const totalPhotos = photos.length
 
   const go   = useCallback((i: number) => setIdx(i), [])
-  const prev = useCallback(() => setIdx(i => (i - 1 + PHOTOS.length) % PHOTOS.length), [])
-  const next = useCallback(() => setIdx(i => (i + 1) % PHOTOS.length), [])
+  const prev = useCallback(() => setIdx(i => (i - 1 + totalPhotos) % totalPhotos), [totalPhotos])
+  const next = useCallback(() => setIdx(i => (i + 1) % totalPhotos), [totalPhotos])
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadGalleryPhotos() {
+      try {
+        const res = await fetch('/api/gallery', { cache: 'no-store' })
+        if (!res.ok) return
+
+        const data = await res.json() as Array<{ src?: string | null }>
+        const nextPhotos = data
+          .map((photo) => photo.src?.trim() ?? '')
+          .filter((src): src is string => src.length > 0)
+
+        if (cancelled || nextPhotos.length === 0) return
+
+        setPhotos(nextPhotos)
+        setIdx((current) => Math.min(current, nextPhotos.length - 1))
+      } catch {
+        // Keep the built-in fallback gallery if the API is unavailable.
+      }
+    }
+
+    void loadGalleryPhotos()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   // GSAP crossfade on slide change
   useEffect(() => {
@@ -251,7 +282,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
               }}
             >
               {/* Stacked images — GSAP drives opacity & scale */}
-              {PHOTOS.map((photo, i) => (
+              {photos.map((photo, i) => (
                 <img
                   key={i}
                   ref={(el) => { imgRefs.current[i] = el }}
@@ -296,14 +327,14 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
                 className="font-mono text-[11px] tabular-nums"
                 style={{ color: 'rgba(255,255,255,0.22)', letterSpacing: '0.12em' }}
               >
-                {String(idx + 1).padStart(2, '0')}&thinsp;/&thinsp;{String(PHOTOS.length).padStart(2, '0')}
+                {String(idx + 1).padStart(2, '0')}&thinsp;/&thinsp;{String(totalPhotos).padStart(2, '0')}
               </span>
               <div className="h-px flex-1 ml-3" style={{ background: 'rgba(255,79,216,0.15)' }} />
             </div>
 
             {/* Thumbnail list */}
             <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar flex flex-col gap-2">
-              {PHOTOS.map((photo, i) => (
+              {photos.map((photo, i) => (
                 <ThumbnailCell
                   key={i}
                   variant="rail"
@@ -318,7 +349,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
 
             {/* Pagination dots */}
             <div className="shrink-0 flex flex-col items-center gap-1.5 py-2">
-              {PHOTOS.map((_, i) => {
+              {photos.map((_, i) => {
                 const on = i === idx
                 return (
                   <button
@@ -343,7 +374,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
 
         {/* ── Mobile/tablet thumbnail strip ── */}
         <div className="flex lg:hidden mt-3 gap-2 overflow-x-auto no-scrollbar shrink-0 pb-0.5">
-          {PHOTOS.map((photo, i) => (
+          {photos.map((photo, i) => (
             <ThumbnailCell
               key={i}
               variant="strip"

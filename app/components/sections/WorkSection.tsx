@@ -72,6 +72,118 @@ const PROJECTS = [
   },
 ]
 
+interface TechIconItem {
+  src: string
+  label: string
+}
+
+const DEFAULT_TECH_ICONS: TechIconItem[] = [
+  { src: '/icon/icon1.png', label: 'Car Care' },
+  { src: '/icon/icon2.png', label: 'Badal' },
+  { src: '/icon/icon3.png', label: 'GymHub' },
+  { src: '/icon/icon4.png', label: 'Nova Mind' },
+  { src: '/icon/icon5.png', label: 'Bluebell' },
+]
+
+type ProjectSlide = typeof PROJECTS[0]
+
+interface ProjectRecord {
+  id: number
+  name: string
+  status: string
+  members: number
+  color: string
+  image: string
+  description: string
+  stats: unknown
+  order: number
+}
+
+function splitTitle(name: string, fallback: string[]): [string, string] {
+  const words = name.trim().split(/\s+/).filter(Boolean)
+  if (words.length === 0) return [fallback[0] || '', fallback[1] || fallback[0] || '']
+  if (words.length === 1) return [words[0], fallback[1] || words[0]]
+
+  const splitAt = Math.ceil(words.length / 2)
+  const left = words.slice(0, splitAt).join(' ')
+  const right = words.slice(splitAt).join(' ')
+  return [left, right || fallback[1] || left]
+}
+
+function normalizeHexColor(input: string | undefined, fallback: string) {
+  const value = (input ?? '').trim()
+  if (/^#[0-9a-fA-F]{6}$/.test(value)) return value
+  return fallback
+}
+
+function hexToRgba(hex: string, alpha: number) {
+  const match = /^#?([0-9a-fA-F]{6})$/.exec(hex)
+  if (!match) return `rgba(111,99,255,${alpha})`
+
+  const value = Number.parseInt(match[1], 16)
+  const r = (value >> 16) & 255
+  const g = (value >> 8) & 255
+  const b = value & 255
+  return `rgba(${r},${g},${b},${alpha})`
+}
+
+function normalizeStats(rawStats: unknown, fallback: ProjectSlide['stats']): ProjectSlide['stats'] {
+  if (Array.isArray(rawStats)) {
+    const stats = rawStats
+      .map((item): ProjectSlide['stats'][number] | null => {
+        if (!item || typeof item !== 'object') return null
+
+        const value = typeof (item as { value?: unknown }).value === 'string'
+          ? ((item as { value?: string }).value ?? '').trim()
+          : ''
+        const label = typeof (item as { label?: unknown }).label === 'string'
+          ? ((item as { label?: string }).label ?? '').trim()
+          : ''
+
+        if (!value && !label) return null
+
+        return {
+          n: value || label,
+          mn: label || value,
+          en: label || value,
+        }
+      })
+      .filter((item): item is ProjectSlide['stats'][number] => item !== null)
+
+    if (stats.length > 0) return stats
+  }
+
+  return fallback
+}
+
+function buildSlides(projects: ProjectRecord[]): ProjectSlide[] {
+  if (projects.length === 0) return PROJECTS
+
+  return projects.map((project, index) => {
+    const fallback = PROJECTS[index % PROJECTS.length]
+    const accent = normalizeHexColor(project.color, fallback.accent)
+    const title = splitTitle(project.name || fallback.title.en.join(' '), fallback.title.en)
+    const description = project.description?.trim() || fallback.description.en
+
+    return {
+      num: String(index + 4).padStart(2, '0'),
+      tag: fallback.tag,
+      title: {
+        mn: title,
+        en: title,
+      },
+      description: {
+        mn: description,
+        en: description,
+      },
+      stats: normalizeStats(project.stats, fallback.stats),
+      accent,
+      mockupGrad: `linear-gradient(135deg, ${hexToRgba(accent, 0.28)} 0%, ${hexToRgba(accent, 0.12)} 50%, #05050d 100%)`,
+      img: project.image?.trim() || fallback.img,
+    }
+  })
+}
+
 function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContentProps) {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -229,17 +341,78 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
   const mn = lang === 'mn'
   const { isDesktop } = useBreakpoint()
   const [activeIdx, setActiveIdx] = useState(0)
+  const [projects, setProjects] = useState<ProjectSlide[]>(PROJECTS)
+  const [techIcons, setTechIcons] = useState<TechIconItem[]>(DEFAULT_TECH_ICONS)
   const mockupRefs  = useRef<(HTMLDivElement | null)[]>([])
   const rightColRef = useRef<HTMLDivElement>(null)
   const textKey     = useRef(0)
   const busyRef     = useRef(false)
   const idxRef      = useRef(0)
+  const totalCount  = projects.length
+  const stripIcons   = techIcons.length > 0 ? techIcons : DEFAULT_TECH_ICONS
 
   useEffect(() => { idxRef.current = activeIdx }, [activeIdx])
 
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadProjects() {
+      try {
+        const res = await fetch('/api/projects', { cache: 'no-store' })
+        if (!res.ok) return
+
+        const data = await res.json() as ProjectRecord[]
+        const nextProjects = buildSlides(Array.isArray(data) ? data : [])
+        if (cancelled || nextProjects.length === 0) return
+
+        setProjects(nextProjects)
+        setActiveIdx((current) => Math.min(current, nextProjects.length - 1))
+      } catch {
+        // Keep the fallback showcase if the public API is unavailable.
+      }
+    }
+
+    void loadProjects()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadTechIcons() {
+      try {
+        const res = await fetch('/api/icons', { cache: 'no-store' })
+        if (!res.ok) return
+
+        const data = await res.json() as Array<{ src?: string | null; label?: string | null }>
+        const nextIcons = data
+          .map((icon) => ({
+            src: icon.src?.trim() ?? '',
+            label: icon.label?.trim() ?? '',
+          }))
+          .filter((icon) => icon.src.length > 0 && icon.label.length > 0)
+
+        if (!cancelled && nextIcons.length > 0) {
+          setTechIcons(nextIcons)
+        }
+      } catch {
+        // Keep the built-in strip if the public API is unavailable.
+      }
+    }
+
+    void loadTechIcons()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   function goTo(next: number, dir: 1 | -1 = 1) {
     if (busyRef.current) return
-    if (next < 0 || next >= PROJECTS.length) return
+    if (next < 0 || next >= totalCount) return
     if (next === idxRef.current) return
     busyRef.current = true
 
@@ -302,7 +475,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
       if (Math.abs(e.deltaY) < 10) return
       const dir = (e.deltaY > 0 ? 1 : -1) as 1 | -1
       const next = idxRef.current + dir
-      if (next < 0 || next >= PROJECTS.length) return
+      if (next < 0 || next >= totalCount) return
       e.stopPropagation()
       e.preventDefault()
       clearTimeout(timer)
@@ -314,9 +487,9 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
       window.removeEventListener('wheel', onWheel, { capture: true })
       clearTimeout(timer)
     }
-  }, [active, isDesktop])
+  }, [active, isDesktop, totalCount])
 
-  const p = PROJECTS[activeIdx]
+  const p = projects[activeIdx] ?? projects[0]
 
   return (
     <section className={`panel${active ? ' active' : ''}`} ref={sectionRef}>
@@ -330,7 +503,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
           className="text-[10px] font-bold tracking-[0.25em] uppercase mb-3 text-center"
           style={{ color: `${p.accent}99` }}
         >
-          {mn ? 'Итгэмжлэгдсэн Технологи' : 'Trusted Technologies'}
+          {mn ? 'Pixel' : 'Pixel'}
         </p>
         <div
           className="tech-strip-wrap overflow-hidden"
@@ -338,17 +511,11 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
         >
           <div className="tech-strip-track flex gap-8 items-stretch">
             {[...Array(10)].flatMap((_, rep) =>
-              [
-                { n: 1, label: 'Car Care'  },
-                { n: 2, label: 'Badal'     },
-                { n: 3, label: 'GymHub'    },
-                { n: 4, label: 'Nova Mind' },
-                { n: 5, label: 'Bluebell'  },
-              ].map(({ n, label }) => (
-                <div key={`${rep}-${n}`} className="tech-icon-card">
+              stripIcons.map((icon, index) => (
+                <div key={`${rep}-${index}-${icon.label}`} className="tech-icon-card">
                   <div className="tech-glow" style={{ background: `radial-gradient(ellipse 80% 55% at 50% -5%, ${p.accent}2e 0%, transparent 68%)` }} />
                   <div className="tech-icon-img-wrap">
-                    <img src={`/icon/icon${n}.png`} alt={label} style={{ width: 52, height: 52, objectFit: 'contain', display: 'block' }} />
+                    <img src={icon.src} alt={icon.label} style={{ width: 52, height: 52, objectFit: 'contain', display: 'block' }} />
                   </div>
                 </div>
               ))
@@ -374,7 +541,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
             key={`${activeIdx}-${textKey.current}-${lang}`}
             p={p}
             activeIdx={activeIdx}
-            totalCount={PROJECTS.length}
+            totalCount={totalCount}
             goTo={goTo}
             idxRef={idxRef}
             mn={mn}
@@ -389,7 +556,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
           className="w-full aspect-[16/10] md:aspect-auto md:flex-1 md:h-full lg:flex-1 relative overflow-hidden
                      md:touch-none md:overscroll-none"
         >
-          {PROJECTS.map((proj, i) => (
+          {projects.map((proj, i) => (
             <div
               key={i}
               ref={(el) => { mockupRefs.current[i] = el }}

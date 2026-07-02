@@ -4,13 +4,21 @@ import { contactPhone } from '../../data/siteContent'
 import { useSectionAnim } from '../useSectionAnim'
 import TypewriterText from '../TypewriterText'
 import { useLang } from '../../context/LangContext'
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaBehance,
+} from "react-icons/fa";
+
+
 
 const SOCIALS = [
-  { label: 'Facebook',  href: '#', icon: 'f' },
-  { label: 'Instagram', href: '#', icon: '▲' },
-  { label: 'LinkedIn',  href: '#', icon: 'in' },
-  { label: 'Behance',   href: '#', icon: 'Bē' },
-]
+  { label: "Facebook", href: "#", icon: FaFacebookF },
+  { label: "Instagram", href: "#", icon: FaInstagram },
+  { label: "LinkedIn", href: "#", icon: FaLinkedinIn },
+  { label: "Behance", href: "#", icon: FaBehance },
+];
 
 interface ContactSectionProps {
   active: boolean
@@ -240,7 +248,7 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
                     style={{ background: 'rgba(111,99,255,0.08)', border: '1px solid rgba(111,99,255,0.15)' }}
                   >
                     <span className="text-[13px] font-black text-pxwhite/60 group-hover:text-hot transition-colors">
-                      {s.icon}
+                      {s.icon && <s.icon size={10} />}
                     </span>
                     <span className="text-[9px] text-mute/40 uppercase tracking-wider">{s.label}</span>
                   </a>

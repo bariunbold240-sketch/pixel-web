@@ -5,23 +5,25 @@ import { motion } from 'framer-motion'
 interface PricingToggleProps {
   page: number
   onChange: (p: number) => void
-  labels: [string, string]
+  labels: string[]
 }
 
 // Floating segmented control — desktop pagination only (mobile/tablet show
 // all plans via the carousel/grid, no page concept there).
 export default function PricingToggle({ page, onChange, labels }: PricingToggleProps) {
+  if (labels.length === 0) return null
+
   return (
     <div
       data-anim
-      className="hidden md:inline-flex mx-auto p-1 rounded-full gap-1"
+      className="hidden md:inline-flex mx-auto p-1 rounded-full gap-1 max-w-full"
       style={{ background: 'rgba(111,99,255,0.08)', border: '1px solid rgba(111,99,255,0.18)' }}
     >
-      {([0, 1] as const).map((p) => (
+      {labels.map((label, p) => (
         <button
           key={p}
           onClick={() => onChange(p)}
-          className="relative px-6 py-2 rounded-full text-[13px] font-bold uppercase tracking-wider cursor-pointer border-0 bg-transparent"
+          className="relative px-5 py-2 rounded-full text-[13px] font-bold uppercase tracking-wider cursor-pointer border-0 bg-transparent"
         >
           {page === p && (
             <motion.span
@@ -35,7 +37,7 @@ export default function PricingToggle({ page, onChange, labels }: PricingToggleP
             className="relative z-10 transition-colors duration-200"
             style={{ color: page === p ? '#fff' : 'rgba(184,194,221,0.6)' }}
           >
-            {labels[p]}
+            {label}
           </span>
         </button>
       ))}
