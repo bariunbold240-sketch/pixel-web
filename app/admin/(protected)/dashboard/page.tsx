@@ -22,7 +22,7 @@ export default async function AdminDashboardPage() {
   type RecentItem = { label: string; sub: string; color: string; letter: string }
 
   const recent: RecentItem[] = [
-    ...recentPhotos.map(p => ({
+    ...recentPhotos.map((p: { src: string }) => ({
       label:  p.src.split('/').pop() ?? p.src,
       sub:    'Галерей зураг нэмэгдсэн',
       color:  '#ff4fd8',
