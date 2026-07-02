@@ -34,6 +34,9 @@ html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
     overflow-x: hidden;
     max-width: 100%;
     overscroll-behavior: auto;
+    /* clearance for the fixed 64px bottom tab bar + iOS home indicator —
+       body-level so the last section's footer is never covered */
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
 }
 body {
@@ -79,14 +82,18 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     visibility: visible !important;
     pointer-events: auto !important;
     transition: none !important;
-    min-height: 100svh;
+    /* No 100svh here: fullscreen slides are a desktop-deck concept. On mobile
+       each section is exactly as tall as its content — no dead black gaps for
+       short sections, no clipping for tall ones. Tab-bar clearance lives on
+       <body> instead of every panel. */
+    min-height: 0;
+    height: auto;
     display: flex !important;
     overflow-x: clip;    /* clip avoids the overflow-y:visible→auto browser upgrade */
     overflow-y: visible;
     align-items: flex-start !important;
     justify-content: flex-start !important;
-    /* room for bottom nav + iOS home indicator + breathing space */
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 8px;
   }
   .panel-inner {
     height: auto !important;
@@ -436,14 +443,42 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     overflow: visible;
     text-overflow: clip;
   }
+  .info-panel-grid p:first-child { font-size: 10px; }
 
   /* ── CONTACT ── */
   /* Map area: cap height on mobile so it doesn't dominate the screen */
-  .contact-map { min-height: 160px !important; max-height: 200px !important; }
+  .contact-map { min-height: 200px !important; max-height: 240px !important; }
+
+  /* ── SPACING RHYTHM ── */
+  /* One consistent 20px gutter for every landing section (8pt system).
+     .self-padded sections (Hero, Work) pad their own children to the same 20px. */
+  .panel-inner:not(.self-padded) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
-/* ── Very small phones (≤ 480px) ── */
-@media (max-width: 480px) {
-  /* Tighten section horizontal padding (.self-padded sections pad their own children) */
-  .panel-inner:not(.self-padded) { padding-left: clamp(16px, 5vw, 28px); padding-right: clamp(16px, 5vw, 28px); }
+/* ── Keyboard/switch-control focus ring (was suppressed by outline-none utilities) ── */
+:focus-visible {
+  outline: 2px solid rgba(111, 99, 255, 0.7);
+  outline-offset: 2px;
+}
+
+/* ── Touch devices: reveal controls that desktop hides behind hover ────────
+   Admin managers gate delete/replace buttons behind group-hover; phones have
+   no hover, so surface them. Desktop (hover-capable) rendering is untouched. */
+@media (hover: none) {
+  .touch-visible { opacity: 1 !important; }
+
+  /* Gallery tile: swap the full-cover hover veil for a bottom scrim so the
+     photo stays visible while filename + delete remain reachable. */
+  .admin-tile-overlay {
+    opacity: 1 !important;
+    background: linear-gradient(180deg, transparent 30%, rgba(5, 5, 13, 0.9) 75%) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    justify-content: flex-end !important;
+    padding-bottom: 10px;
+  }
+  .admin-tile-overlay button { min-height: 40px; padding-inline: 16px; }
 }

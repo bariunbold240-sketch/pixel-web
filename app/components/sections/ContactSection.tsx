@@ -39,6 +39,7 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
       ),
       label: mn ? 'Утас' : 'Phone',
       value: contactPhone,
+      href: `tel:${contactPhone.replace(/\s/g, '')}`,
       color: '#6f63ff',
     },
     {
@@ -50,6 +51,7 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
       ),
       label: mn ? 'И-мэйл' : 'Email',
       value: 'hello@pixel.mn',
+      href: 'mailto:hello@pixel.mn',
       color: '#ff4fd8',
     },
     {
@@ -61,6 +63,7 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
       ),
       label: mn ? 'Хаяг' : 'Address',
       value: 'UNESCO St 62, СБД-1, УБ 14230',
+      href: undefined as string | undefined,
       color: '#15a59a',
     },
   ]
@@ -220,14 +223,22 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
                     <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: 'rgba(184,194,221,0.45)' }}>
                       {item.label}
                     </p>
-                    <p className="text-[clamp(13px,1.1vw,14px)] text-pxwhite font-medium">{item.value}</p>
+                    {/* Phone/email are real tel:/mailto: links — one-tap on mobile,
+                        visually identical to the previous plain text */}
+                    {item.href ? (
+                      <a href={item.href} className="text-[clamp(13px,1.1vw,14px)] text-pxwhite font-medium no-underline block">
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="text-[clamp(13px,1.1vw,14px)] text-pxwhite font-medium">{item.value}</p>
+                    )}
                   </div>
                 </div>
               ))}
 
               <a
                 href={`tel:${contactPhone.replace(/\s/g, '')}`}
-                className="mt-auto w-full py-3 rounded-xl text-[13px] font-bold uppercase tracking-wider text-center cursor-pointer border-0 transition-opacity duration-[250ms] hover:opacity-90 no-underline"
+                className="mt-auto w-full py-3 max-md:min-h-12 max-md:flex max-md:items-center max-md:justify-center rounded-xl text-[13px] font-bold uppercase tracking-wider text-center cursor-pointer border-0 transition-opacity duration-[250ms] hover:opacity-90 no-underline"
                 style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 8px 28px rgba(111,99,255,0.3)', display: 'block' }}
               >
                 {mn ? 'Залгах →' : 'Call →'}
@@ -258,8 +269,8 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-6 pt-4 border-t border-line/30 flex items-center justify-between">
+        {/* Footer — stacks and centers on mobile so the copyright stays readable */}
+        <div className="mt-6 pt-4 border-t border-line/30 flex items-center justify-between max-md:flex-col max-md:gap-1.5">
           <span className="section-num">06 / 06</span>
           <p className="text-[10px] text-mute/35 text-center">
             {mn

@@ -18,7 +18,7 @@ export default function LogoutButton() {
     <button
       onClick={handleLogout}
       disabled={busy}
-      className="flex w-full items-center gap-2.5 rounded-xl border-0 px-3 py-2.5 text-[13px] font-medium transition-colors duration-200 cursor-pointer"
+      className="flex w-full items-center gap-2.5 rounded-xl border-0 px-3 py-2.5 max-lg:min-h-11 text-[13px] font-medium transition-colors duration-200 cursor-pointer"
       style={{
         background: busy ? 'rgba(255,79,216,0.06)' : 'transparent',
         color: 'rgba(255,79,216,0.7)',

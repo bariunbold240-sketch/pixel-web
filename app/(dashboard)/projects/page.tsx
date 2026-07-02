@@ -69,8 +69,11 @@ function ProjectMobileCard({
         </div>
       </div>
 
+      {/* Secondary style: the page-level "+ Шинэ төсөл" keeps the gradient as the
+          single primary CTA — four gradient buttons per screen flattened hierarchy */}
       <button
-        className="mt-4 w-full rounded-xl border-0 bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-4 py-3 text-[12px] font-bold text-white"
+        className="mt-4 w-full min-h-12 rounded-xl border-0 px-4 py-3 text-[13px] font-bold cursor-pointer"
+        style={{ background: 'rgba(111,99,255,0.12)', color: '#9d94ff', border: '1px solid rgba(111,99,255,0.25)' }}
       >
         Харах
       </button>
@@ -89,7 +92,7 @@ export default function ProjectsPage() {
           <h1 className="text-[24px] font-black tracking-tight text-pxwhite sm:text-[28px]">Төслүүд</h1>
         </div>
         <button
-          className="w-full rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto"
+          className="w-full max-sm:min-h-12 rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto"
           style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}
         >
           + Шинэ төсөл

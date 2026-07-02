@@ -59,7 +59,7 @@ export default function IconsManager({ initialIcons }: { initialIcons: Icon[] })
         </div>
         <button
           onClick={() => { setShowAdd(v => !v); setPreview(''); setAddLabel('') }}
-          className="w-full rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
+          className="w-full max-sm:min-h-12 rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
           style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}
         >
           + Icon нэмэх
@@ -79,7 +79,7 @@ export default function IconsManager({ initialIcons }: { initialIcons: Icon[] })
                 style={{ border: '1px solid rgba(111,99,255,0.2)', background: 'rgba(111,99,255,0.06)' }}>
                 <img src={preview} alt="preview" className="w-full h-full object-contain p-3" />
                 <button type="button" onClick={() => { setPreview(''); fileRef.current && (fileRef.current.value = '') }}
-                  className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full border-0 cursor-pointer text-[12px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="touch-visible absolute top-1.5 right-1.5 w-6 h-6 max-md:w-9 max-md:h-9 rounded-full border-0 cursor-pointer text-[12px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{ background: 'rgba(255,79,100,0.85)', color: '#fff' }}>×</button>
               </div>
             ) : (
@@ -117,11 +117,11 @@ export default function IconsManager({ initialIcons }: { initialIcons: Icon[] })
               </label>
               <input value={addLabel} onChange={e => setAddLabel(e.target.value)}
                 placeholder="Компанийн нэр" required
-                className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none"
+                className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none"
                 style={inputStyle} />
             </div>
             <button type="submit" disabled={adding || !preview}
-              className="rounded-xl border-0 px-6 py-3 text-[13px] font-bold text-white cursor-pointer"
+              className="rounded-xl border-0 px-6 py-3 max-md:min-h-12 text-[13px] font-bold text-white cursor-pointer"
               style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', opacity: (adding || !preview) ? 0.5 : 1 }}>
               {adding ? 'Хадгалж байна...' : 'Хадгалах'}
             </button>
@@ -137,8 +137,9 @@ export default function IconsManager({ initialIcons }: { initialIcons: Icon[] })
             style={{ border: '1px solid rgba(111,99,255,0.15)' }}>
             <img src={icon.src} alt={icon.label} className="w-14 h-14 object-contain" />
             <p className="text-[12px] font-bold text-pxwhite text-center">{icon.label}</p>
+            {/* touch-visible: delete stays reachable on phones (no hover there) */}
             <button onClick={() => handleDelete(icon.id)} disabled={busy === icon.id}
-              className="w-full rounded-lg border-0 py-1.5 text-[11px] font-bold cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              className="touch-visible w-full rounded-lg border-0 py-1.5 max-md:min-h-10 text-[11px] font-bold cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               style={{ background: 'rgba(255,79,100,0.12)', color: '#ff6b7a', border: '1px solid rgba(255,79,100,0.25)' }}>
               {busy === icon.id ? '...' : 'Устгах'}
             </button>

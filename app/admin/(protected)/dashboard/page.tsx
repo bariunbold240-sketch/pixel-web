@@ -46,13 +46,13 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
         {STATS.map((s) => (
-          <div key={s.label} className="glass-card flex flex-col gap-3 rounded-2xl p-5" style={{ border: `1px solid ${s.color}22` }}>
+          <div key={s.label} className="glass-card flex flex-col gap-3 rounded-2xl p-4 sm:p-5" style={{ border: `1px solid ${s.color}22` }}>
             <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.5)' }}>
               {s.label}
             </p>
-            <p className="text-[36px] font-black leading-none" style={{ color: s.color }}>
+            <p className="text-[28px] sm:text-[36px] font-black leading-none" style={{ color: s.color }}>
               {s.value}{s.suffix}
             </p>
             <span className="self-start rounded-full px-2 py-0.5 text-[11px] font-bold" style={{ background: `${s.color}18`, color: s.color }}>

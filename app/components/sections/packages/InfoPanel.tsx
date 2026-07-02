@@ -16,11 +16,11 @@ export default function InfoPanel({ mn, phone }: InfoPanelProps) {
   ]
 
   return (
-    <div data-anim className="info-panel-grid grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+    <div data-anim className="info-panel-grid grid grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-4 gap-2.5">
       {items.map((item) => (
         <div
           key={item.label}
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-250 hover:-translate-y-0.5"
+          className="flex items-center gap-3 px-3.5 py-2.5 max-md:py-3 rounded-xl transition-all duration-250 hover:-translate-y-0.5"
           style={{ background: 'var(--color-glass)', border: '1px solid var(--color-line)', backdropFilter: 'blur(16px)' }}
         >
           <div

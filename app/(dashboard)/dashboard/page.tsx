@@ -23,17 +23,18 @@ export default function DashboardPage() {
         <h1 className="text-[24px] font-black tracking-tight text-pxwhite sm:text-[28px]">Сайн байна уу 👋</h1>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Stat cards — 2×2 on phones: four full-width cards pushed the activity
+          list a screen below the fold */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {STATS.map((s) => (
           <div key={s.label} className="glass-card flex flex-col gap-3 rounded-2xl p-4 sm:p-5" style={{ border: `1px solid ${s.color}22` }}>
             <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.5)' }}>
               {s.label}
             </p>
-            <p className="text-[28px] font-black leading-none sm:text-[32px]" style={{ color: s.color }}>
+            <p className="text-[24px] font-black leading-none sm:text-[32px]" style={{ color: s.color }}>
               {s.value}
             </p>
-            <span className="self-start rounded-full px-2 py-0.5 text-[11px] font-bold" style={{ background: `${s.color}18`, color: s.color }}>
+            <span className="self-start rounded-full px-2 py-0.5 text-[11px] max-sm:text-[10px] font-bold" style={{ background: `${s.color}18`, color: s.color }}>
               {s.change} өнгөрсөн сараас
             </span>
           </div>

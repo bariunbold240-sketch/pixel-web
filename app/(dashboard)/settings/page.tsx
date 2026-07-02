@@ -32,7 +32,7 @@ export default function SettingsPage() {
             <button
               key={section}
               onClick={() => setActive(section)}
-              className="shrink-0 rounded-xl px-4 py-2.5 text-left text-[13px] font-medium transition-all duration-150 lg:w-full"
+              className="shrink-0 rounded-xl px-4 py-2.5 max-lg:min-h-11 text-left text-[13px] font-medium transition-all duration-150 lg:w-full"
               style={
                 active === section
                   ? { background: 'rgba(111,99,255,0.18)', color: '#f7f9ff', border: '1px solid rgba(111,99,255,0.3)' }
@@ -61,7 +61,7 @@ export default function SettingsPage() {
                   <input
                     type="text"
                     placeholder={field.placeholder}
-                    className="w-full max-w-none rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none placeholder-mute/30 sm:max-w-sm"
+                    className="w-full max-w-none rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none placeholder-mute/30 sm:max-w-sm"
                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(111,99,255,0.2)' }}
                     onFocus={(e) => (e.target.style.borderColor = 'rgba(111,99,255,0.55)')}
                     onBlur={(e) => (e.target.style.borderColor = 'rgba(111,99,255,0.2)')}
@@ -71,7 +71,7 @@ export default function SettingsPage() {
               <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button
                   type="submit"
-                  className="w-full rounded-xl border-0 px-6 py-2.5 text-[13px] font-bold text-white sm:w-auto"
+                  className="w-full max-sm:min-h-12 rounded-xl border-0 px-6 py-2.5 text-[13px] font-bold text-white sm:w-auto"
                   style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)' }}
                 >
                   Хадгалах

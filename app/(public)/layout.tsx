@@ -11,7 +11,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         style={{ width: 500, height: 500, bottom: '-15%', right: '-10%',
           background: 'radial-gradient(circle, rgba(255,79,216,0.09) 0%, transparent 65%)', filter: 'blur(80px)' }} />
 
-      <div className="relative z-10 w-full max-w-[420px] px-4">
+      <div className="relative z-10 w-full max-w-[420px] px-4 py-10">
         {children}
       </div>
     </div>

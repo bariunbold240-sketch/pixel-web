@@ -46,7 +46,7 @@ function NavItemLink({
     <Link
       href={item.href}
       aria-current={active ? 'page' : undefined}
-      className="flex min-w-[132px] shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-[12px] font-semibold no-underline transition-all duration-200"
+      className="flex min-w-[132px] min-h-11 shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-[13px] font-semibold no-underline transition-all duration-200"
       style={
         active
           ? {
@@ -96,7 +96,7 @@ export default function MobileDashboardNav() {
 
         <Link
           href="/"
-          className="rounded-lg border px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] no-underline"
+          className="rounded-lg border px-3 py-2 min-h-11 flex items-center text-[11px] font-bold uppercase tracking-[0.14em] no-underline"
           style={{ color: 'rgba(184,194,221,0.62)', borderColor: 'rgba(111,99,255,0.18)' }}
         >
           Нүүр

@@ -38,7 +38,7 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
           borderTop: '1px solid rgba(111,99,255,0.14)',
-          minHeight: 56,
+          minHeight: 64,
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
       >
@@ -49,7 +49,7 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
               key={i}
               onClick={() => go(i)}
               aria-label={names[i]}
-              className="flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer border-0 bg-transparent py-2 relative"
+              className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer border-0 bg-transparent py-2 relative min-h-12"
             >
               {/* Active indicator line at top */}
               <div
@@ -77,7 +77,7 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
               {/* Label */}
               <span
                 className="text-[9px] font-bold uppercase tracking-[0.04em] transition-colors duration-[250ms] leading-[1.15] px-0.5 text-center"
-                style={{ color: active ? '#ff4fd8' : 'rgba(184,194,221,0.42)' }}
+                style={{ color: active ? '#ff4fd8' : 'rgba(184,194,221,0.55)' }}
               >
                 {names[i]}
               </span>

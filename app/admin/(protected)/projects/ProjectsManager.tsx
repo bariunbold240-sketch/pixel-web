@@ -19,11 +19,14 @@ type FormData = Omit<Project, 'id' | 'order'>
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.65)' }}>
-      <div className="glass-card w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
+      {/* 85dvh on phones: 90vh ignores the browser toolbar and lets the modal
+          bottom (submit row) slide under it */}
+      <div className="glass-card w-full max-w-md rounded-2xl p-6 max-sm:p-5 flex flex-col gap-5 max-h-[90vh] max-sm:max-h-[85dvh] overflow-y-auto"
         style={{ border: '1px solid rgba(111,99,255,0.25)' }}>
         <div className="flex items-center justify-between shrink-0">
           <h2 className="text-[16px] font-black text-pxwhite">{title}</h2>
-          <button onClick={onClose} className="cursor-pointer border-0 bg-transparent text-[20px] leading-none" style={{ color: 'rgba(184,194,221,0.5)' }}>×</button>
+          {/* p-2 -m-2 widens the tap area without moving a pixel */}
+          <button onClick={onClose} className="cursor-pointer border-0 bg-transparent text-[20px] leading-none p-2 -m-2" style={{ color: 'rgba(184,194,221,0.5)' }}>×</button>
         </div>
         {children}
       </div>
@@ -53,7 +56,7 @@ function ImageUploader({ value, onChange }: { value: string; onChange: (url: str
         <div className="relative w-full h-36 rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(111,99,255,0.2)' }}>
           <img src={value} alt="preview" className="w-full h-full object-cover object-top" />
           <button type="button" onClick={() => onChange('')}
-            className="absolute top-2 right-2 w-6 h-6 rounded-full border-0 cursor-pointer text-[12px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            className="touch-visible absolute top-2 right-2 w-6 h-6 max-md:w-9 max-md:h-9 rounded-full border-0 cursor-pointer text-[12px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             style={{ background: 'rgba(255,79,100,0.85)', color: '#fff' }}>×</button>
         </div>
       ) : (
@@ -74,7 +77,7 @@ function ImageUploader({ value, onChange }: { value: string; onChange: (url: str
 
       {value && (
         <button type="button" onClick={() => inputRef.current?.click()} disabled={busy}
-          className="rounded-xl border-0 py-2 text-[12px] font-bold cursor-pointer"
+          className="rounded-xl border-0 py-2 max-md:min-h-11 text-[12px] font-bold cursor-pointer"
           style={{ background: 'rgba(111,99,255,0.1)', color: '#6f63ff' }}>
           {busy ? 'Байршуулж байна...' : 'Зураг солих'}
         </button>
@@ -110,7 +113,7 @@ function StatsEditor({ stats, onChange }: { stats: Stat[]; onChange: (s: Stat[])
       </div>
 
       {stats.length > 0 && (
-        <div className="grid grid-cols-[1fr_1fr_24px] gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-wider mb-0.5"
+        <div className="grid grid-cols-[1fr_1fr_24px] max-sm:grid-cols-[1fr_1fr_32px] gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-wider mb-0.5"
           style={{ color: 'rgba(184,194,221,0.35)' }}>
           <span>Утга (6,932)</span><span>Нэр (Хэрэглэгч)</span><span />
         </div>
@@ -118,17 +121,17 @@ function StatsEditor({ stats, onChange }: { stats: Stat[]; onChange: (s: Stat[])
 
       <div className="flex flex-col gap-1.5">
         {stats.map((s, i) => (
-          <div key={i} className="grid grid-cols-[1fr_1fr_24px] gap-2 items-center">
+          <div key={i} className="grid grid-cols-[1fr_1fr_24px] max-sm:grid-cols-[1fr_1fr_32px] gap-2 items-center">
             <input value={s.value} onChange={e => update(i, 'value', e.target.value)}
               placeholder="6,932"
-              className="rounded-lg px-3 py-1.5 text-[12px] text-pxwhite outline-none"
+              className="rounded-lg px-3 py-1.5 max-sm:py-2 text-[12px] text-pxwhite outline-none"
               style={cellStyle} />
             <input value={s.label} onChange={e => update(i, 'label', e.target.value)}
               placeholder="Хэрэглэгч"
-              className="rounded-lg px-3 py-1.5 text-[12px] text-pxwhite outline-none"
+              className="rounded-lg px-3 py-1.5 max-sm:py-2 text-[12px] text-pxwhite outline-none"
               style={cellStyle} />
             <button type="button" onClick={() => remove(i)}
-              className="w-6 h-6 rounded-lg border-0 cursor-pointer text-[12px] flex items-center justify-center shrink-0"
+              className="w-6 h-6 max-sm:w-8 max-sm:h-8 rounded-lg border-0 cursor-pointer text-[12px] flex items-center justify-center shrink-0"
               style={{ background: 'rgba(255,79,100,0.1)', color: '#ff6b7a' }}>×</button>
           </div>
         ))}
@@ -168,7 +171,7 @@ function ProjectForm({ initial, onSave, onCancel, saving }: {
       <div className="flex flex-col gap-1.5">
         <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.5)' }}>Нэр</label>
         <input value={name} onChange={e => setName(e.target.value)} placeholder="Төслийн нэр" required
-          className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none" style={inputStyle} />
+          className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none" style={inputStyle} />
       </div>
 
       {/* Description */}
@@ -187,14 +190,14 @@ function ProjectForm({ initial, onSave, onCancel, saving }: {
       <div className="flex flex-col gap-1.5">
         <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.5)' }}>Нийт хэрэглэгч</label>
         <input type="number" value={members} onChange={e => setMembers(e.target.value)} placeholder="0" required
-          className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none" style={inputStyle} />
+          className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none" style={inputStyle} />
       </div>
 
       {/* Status */}
       <div className="flex flex-col gap-1.5">
         <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(184,194,221,0.5)' }}>Статус</label>
         <select value={status} onChange={e => setStatus(e.target.value)}
-          className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none"
+          className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none"
           style={{ ...inputStyle, appearance: 'none' as const }}>
           {Object.keys(STATUS_COLOR).map(s => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -217,12 +220,12 @@ function ProjectForm({ initial, onSave, onCancel, saving }: {
 
       <div className="flex gap-3 mt-2">
         <button type="submit" disabled={saving}
-          className="flex-1 rounded-xl border-0 py-3 text-[13px] font-bold text-white cursor-pointer"
+          className="flex-1 rounded-xl border-0 py-3 max-sm:min-h-12 text-[13px] font-bold text-white cursor-pointer"
           style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', opacity: saving ? 0.7 : 1 }}>
           {saving ? 'Хадгалж байна...' : 'Хадгалах'}
         </button>
         <button type="button" onClick={onCancel}
-          className="flex-1 rounded-xl border py-3 text-[13px] font-bold cursor-pointer"
+          className="flex-1 rounded-xl border py-3 max-sm:min-h-12 text-[13px] font-bold cursor-pointer"
           style={{ background: 'transparent', borderColor: 'rgba(111,99,255,0.25)', color: 'rgba(184,194,221,0.6)' }}>
           Болих
         </button>
@@ -277,7 +280,7 @@ export default function ProjectsManager({ initialProjects }: { initialProjects: 
           <h1 className="text-[24px] font-black tracking-tight text-pxwhite sm:text-[28px]">Төслүүд</h1>
         </div>
         <button onClick={() => { setSelected(null); setModal('add') }}
-          className="w-full rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
+          className="w-full max-sm:min-h-12 rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
           style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}>
           + Шинэ төсөл
         </button>
@@ -343,10 +346,10 @@ export default function ProjectsManager({ initialProjects }: { initialProjects: 
 
               <div className="flex gap-2">
                 <button onClick={() => { setSelected(project); setModal('edit') }}
-                  className="flex-1 rounded-xl border-0 py-2 text-[12px] font-bold cursor-pointer"
+                  className="flex-1 rounded-xl border-0 py-2 max-sm:min-h-11 text-[12px] font-bold cursor-pointer"
                   style={{ background: 'rgba(111,99,255,0.12)', color: '#6f63ff' }}>Засах</button>
                 <button onClick={() => { setSelected(project); setModal('delete') }}
-                  className="flex-1 rounded-xl border-0 py-2 text-[12px] font-bold cursor-pointer"
+                  className="flex-1 rounded-xl border-0 py-2 max-sm:min-h-11 text-[12px] font-bold cursor-pointer"
                   style={{ background: 'rgba(255,79,100,0.08)', color: '#ff6b7a' }}>Устгах</button>
               </div>
             </div>
@@ -383,12 +386,12 @@ export default function ProjectsManager({ initialProjects }: { initialProjects: 
           </p>
           <div className="flex gap-3">
             <button onClick={handleDelete} disabled={deleting}
-              className="flex-1 rounded-xl border-0 py-3 text-[13px] font-bold text-white cursor-pointer"
+              className="flex-1 rounded-xl border-0 py-3 max-sm:min-h-12 text-[13px] font-bold text-white cursor-pointer"
               style={{ background: 'linear-gradient(135deg,#ff4f64,#ff4fd8)', opacity: deleting ? 0.7 : 1 }}>
               {deleting ? 'Устгаж байна...' : 'Устгах'}
             </button>
             <button onClick={() => setModal(null)}
-              className="flex-1 rounded-xl border py-3 text-[13px] font-bold cursor-pointer"
+              className="flex-1 rounded-xl border py-3 max-sm:min-h-12 text-[13px] font-bold cursor-pointer"
               style={{ background: 'transparent', borderColor: 'rgba(111,99,255,0.25)', color: 'rgba(184,194,221,0.6)' }}>
               Болих
             </button>

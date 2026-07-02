@@ -12,7 +12,7 @@ export default function PricingFeature({ label, value, featured }: PricingFeatur
   const included = value !== '—'
 
   return (
-    <li className="flex items-center justify-between gap-1 text-[11px] md:text-[13px] lg:text-[15px]">
+    <li className="flex items-center justify-between gap-1 text-[12px] md:text-[13px] lg:text-[15px]">
       <span className={`flex items-center gap-1.5 min-w-0 ${included ? 'text-mute/80' : 'text-mute/25'}`}>
         <span
           className="shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
@@ -30,7 +30,7 @@ export default function PricingFeature({ label, value, featured }: PricingFeatur
         <span className="truncate">{label}</span>
       </span>
       <span
-        className="shrink-0 font-bold text-[11px] md:text-[13px] lg:text-[15px] ml-1"
+        className="shrink-0 font-bold text-[12px] md:text-[13px] lg:text-[15px] ml-1"
         style={{ color: included ? (featured ? '#ff4fd8' : '#f7f9ff') : 'rgba(184,194,221,0.2)' }}
       >
         {value}

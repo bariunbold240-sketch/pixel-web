@@ -156,6 +156,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
   const imgRefs    = useRef<(HTMLImageElement | null)[]>([])
   const prevIdxRef = useRef(0)
   const thumbRefs  = useRef<(HTMLButtonElement | null)[]>([])
+  const swipeRef   = useRef<{ x: number; y: number } | null>(null)
   const totalPhotos = photos.length
 
   const go   = useCallback((i: number) => setIdx(i), [])
@@ -255,7 +256,26 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
             Horizontal padding creates space for the floating arrows.
             The card itself derives width from height × aspect-ratio (portrait).
           */}
-          <div className="relative flex-1 min-h-0 flex items-center justify-center px-3 lg:px-14">
+          {/* Horizontal swipes flip slides on touch devices; vertical swipes
+              fall through to normal page scrolling. Desktop is unaffected. */}
+          <div
+            className="relative flex-1 min-h-0 flex items-center justify-center px-3 lg:px-14"
+            onTouchStart={(e) => {
+              const t = e.touches[0]
+              swipeRef.current = { x: t.clientX, y: t.clientY }
+            }}
+            onTouchEnd={(e) => {
+              const start = swipeRef.current
+              swipeRef.current = null
+              if (!start) return
+              const t = e.changedTouches[0]
+              const dx = t.clientX - start.x
+              const dy = t.clientY - start.y
+              if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.5) return
+              if (dx < 0) next()
+              else prev()
+            }}
+          >
 
             <NavArrow dir="prev" onClick={prev} />
 
@@ -370,6 +390,15 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
               })}
             </div>
           </div>
+        </div>
+
+        {/* ── Mobile/tablet slide counter ── */}
+        <div className="flex lg:hidden items-center justify-center gap-3 mt-3 shrink-0">
+          <div className="h-px w-8" style={{ background: 'rgba(255,79,216,0.25)' }} />
+          <span className="font-mono text-[11px] tabular-nums" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.12em' }}>
+            {String(idx + 1).padStart(2, '0')} / {String(totalPhotos).padStart(2, '0')}
+          </span>
+          <div className="h-px w-8" style={{ background: 'rgba(255,79,216,0.25)' }} />
         </div>
 
         {/* ── Mobile/tablet thumbnail strip ── */}

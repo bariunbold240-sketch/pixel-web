@@ -37,20 +37,20 @@ function FeatureEditor({ features, onChange }: { features: Feature[]; onChange: 
               value={f.label}
               onChange={e => update(i, 'label', e.target.value)}
               placeholder="Нэр"
-              className="flex-1 min-w-0 rounded-lg px-3 py-1.5 text-[12px] text-pxwhite outline-none"
+              className="flex-1 min-w-0 rounded-lg px-3 py-1.5 max-sm:py-2 text-[12px] text-pxwhite outline-none"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(111,99,255,0.15)' }}
             />
             <input
               value={f.value}
               onChange={e => update(i, 'value', e.target.value)}
               placeholder="Утга"
-              className="w-14 rounded-lg px-2 py-1.5 text-[12px] text-pxwhite outline-none text-center"
+              className="w-14 max-sm:w-16 rounded-lg px-2 py-1.5 max-sm:py-2 text-[12px] text-pxwhite outline-none text-center"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(111,99,255,0.15)' }}
             />
             <button
               type="button"
               onClick={() => remove(i)}
-              className="shrink-0 w-6 h-6 rounded-lg border-0 cursor-pointer text-[12px] flex items-center justify-center"
+              className="shrink-0 w-6 h-6 max-sm:w-8 max-sm:h-8 rounded-lg border-0 cursor-pointer text-[12px] flex items-center justify-center"
               style={{ background: 'rgba(255,79,100,0.1)', color: '#ff6b7a' }}
             >
               ×
@@ -91,14 +91,15 @@ function PackageModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
-      <div className="glass-card w-full max-w-lg rounded-2xl p-6 flex flex-col gap-5 max-h-[90vh] overflow-y-auto"
+      <div className="glass-card w-full max-w-lg rounded-2xl p-6 max-sm:p-5 flex flex-col gap-5 max-h-[90vh] max-sm:max-h-[85dvh] overflow-y-auto"
         style={{ border: '1px solid rgba(111,99,255,0.25)' }}>
 
         <div className="flex items-center justify-between shrink-0">
           <h2 className="text-[16px] font-black text-pxwhite">
             {initial ? 'Багц засах' : 'Шинэ багц нэмэх'}
           </h2>
-          <button onClick={onClose} className="border-0 bg-transparent cursor-pointer text-[22px] leading-none" style={{ color: 'rgba(184,194,221,0.5)' }}>×</button>
+          {/* p-2 -m-2 widens the tap area without moving a pixel */}
+          <button onClick={onClose} className="border-0 bg-transparent cursor-pointer text-[22px] leading-none p-2 -m-2" style={{ color: 'rgba(184,194,221,0.5)' }}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -112,7 +113,7 @@ function PackageModal({
               onChange={e => setName(e.target.value)}
               placeholder="Pixel Smart"
               required
-              className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none"
+              className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none"
               style={inputStyle}
             />
           </div>
@@ -126,7 +127,7 @@ function PackageModal({
               value={price}
               onChange={e => setPrice(e.target.value)}
               placeholder="₮990,000"
-              className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none"
+              className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none"
               style={inputStyle}
             />
           </div>
@@ -152,7 +153,7 @@ function PackageModal({
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl border-0 py-3 text-[13px] font-bold text-white cursor-pointer"
+              className="flex-1 rounded-xl border-0 py-3 max-sm:min-h-12 text-[13px] font-bold text-white cursor-pointer"
               style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', opacity: saving ? 0.7 : 1 }}
             >
               {saving ? 'Хадгалж байна...' : 'Хадгалах'}
@@ -160,7 +161,7 @@ function PackageModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-xl border py-3 text-[13px] font-bold cursor-pointer"
+              className="flex-1 rounded-xl border py-3 max-sm:min-h-12 text-[13px] font-bold cursor-pointer"
               style={{ background: 'transparent', borderColor: 'rgba(111,99,255,0.25)', color: 'rgba(184,194,221,0.6)' }}
             >
               Болих
@@ -230,7 +231,7 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
         </div>
         <button
           onClick={openAdd}
-          className="w-full rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
+          className="w-full max-sm:min-h-12 rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
           style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}
         >
           + Багц нэмэх
@@ -278,14 +279,14 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
             <div className="flex gap-2 pt-2 border-t" style={{ borderColor: 'rgba(111,99,255,0.1)' }}>
               <button
                 onClick={() => openEdit(pkg)}
-                className="flex-1 rounded-xl border-0 py-2 text-[12px] font-bold cursor-pointer"
+                className="flex-1 rounded-xl border-0 py-2 max-sm:min-h-11 text-[12px] font-bold cursor-pointer"
                 style={{ background: 'rgba(111,99,255,0.12)', color: '#6f63ff' }}
               >
                 Засах
               </button>
               <button
                 onClick={() => openDel(pkg)}
-                className="flex-1 rounded-xl border-0 py-2 text-[12px] font-bold cursor-pointer"
+                className="flex-1 rounded-xl border-0 py-2 max-sm:min-h-11 text-[12px] font-bold cursor-pointer"
                 style={{ background: 'rgba(255,79,100,0.08)', color: '#ff6b7a' }}
               >
                 Устгах
@@ -320,14 +321,14 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="flex-1 rounded-xl border-0 py-3 text-[13px] font-bold text-white cursor-pointer"
+                className="flex-1 rounded-xl border-0 py-3 max-sm:min-h-12 text-[13px] font-bold text-white cursor-pointer"
                 style={{ background: 'linear-gradient(135deg,#ff4f64,#ff4fd8)', opacity: deleting ? 0.7 : 1 }}
               >
                 {deleting ? 'Устгаж байна...' : 'Устгах'}
               </button>
               <button
                 onClick={() => setModal(null)}
-                className="flex-1 rounded-xl border py-3 text-[13px] font-bold cursor-pointer"
+                className="flex-1 rounded-xl border py-3 max-sm:min-h-12 text-[13px] font-bold cursor-pointer"
                 style={{ background: 'transparent', borderColor: 'rgba(111,99,255,0.25)', color: 'rgba(184,194,221,0.6)' }}
               >
                 Болих

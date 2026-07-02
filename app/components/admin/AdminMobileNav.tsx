@@ -95,7 +95,7 @@ export default function AdminMobileNav() {
               key={item.href}
               href={item.href}
               aria-current={active ? 'page' : undefined}
-              className="flex min-w-33 shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-[12px] font-semibold no-underline transition-all duration-200"
+              className="flex min-w-33 min-h-11 shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-[13px] font-semibold no-underline transition-all duration-200"
               style={
                 active
                   ? { background: 'linear-gradient(135deg,rgba(111,99,255,0.2),rgba(255,79,216,0.12))', color: '#f7f9ff', borderColor: 'rgba(111,99,255,0.35)', boxShadow: '0 6px 18px rgba(111,99,255,0.14)' }

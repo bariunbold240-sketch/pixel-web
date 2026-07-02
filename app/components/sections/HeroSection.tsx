@@ -114,11 +114,13 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
       className={`panel${active ? ' active' : ''}`}
       ref={sectionRef}
     >
-      <div ref={innerRef} className="panel-inner h-full w-full flex flex-col max-w-[1440px] mx-auto">
+      {/* self-padded: content carries its own 20px mobile gutter; the stats bar
+          bleeds full-width to the screen edges for a stronger mobile footer */}
+      <div ref={innerRef} className="panel-inner self-padded hero-fill h-full w-full flex flex-col max-w-[1440px] mx-auto">
 
         {/* ── Main content ─────────────────────────────── */}
         <div className="flex-1 flex flex-col justify-start
-                        px-[clamp(24px,6vw,96px)]
+                        px-5 md:px-[clamp(24px,6vw,96px)]
                         pt-20 md:pt-[clamp(200px,27vh,290px)]">
 
           <div
@@ -145,11 +147,11 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
 
           {/* Full-width stacked column on mobile (<768px), inline row from md — same
               767/768 line as the deck→scroll switch */}
-          <div className="hero-btns flex flex-col md:flex-row items-stretch md:items-center gap-2.5 md:gap-4 mt-8">
-            <button className="w-full md:w-auto rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 transition-opacity">
+          <div className="hero-btns flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 mt-8">
+            <button className="w-full md:w-auto max-md:min-h-12 rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 transition-opacity">
               {mn ? 'ХОЛБОО БАРИХ' : 'GET IN TOUCH'}
             </button>
-            <button className="w-full md:w-auto rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 transition-colors">
+            <button className="w-full md:w-auto max-md:min-h-12 rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 transition-colors">
               {mn ? 'БАГЦ' : 'PACKAGES'}
             </button>
           </div>

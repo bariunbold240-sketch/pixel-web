@@ -62,7 +62,7 @@ export default function GalleryManager({ initialPhotos }: { initialPhotos: Photo
         </div>
         <button
           onClick={() => { setShowAdd(v => !v); setPreview(''); setAddAlt('') }}
-          className="w-full rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
+          className="w-full max-sm:min-h-12 rounded-xl border-0 px-5 py-2.5 text-[13px] font-bold sm:w-auto cursor-pointer"
           style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 6px 20px rgba(111,99,255,0.3)' }}
         >
           + Зураг нэмэх
@@ -79,11 +79,12 @@ export default function GalleryManager({ initialPhotos }: { initialPhotos: Photo
           {preview ? (
             <div className="relative w-full h-52 rounded-xl overflow-hidden group" style={{ border: '1px solid rgba(111,99,255,0.2)' }}>
               <img src={preview} alt="preview" className="w-full h-full object-cover" />
+              {/* touch-visible: hover-gated controls are unreachable on touch screens */}
               <button type="button" onClick={() => { setPreview(''); fileRef.current && (fileRef.current.value = '') }}
-                className="absolute top-2 right-2 w-7 h-7 rounded-full border-0 cursor-pointer text-[14px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="touch-visible absolute top-2 right-2 w-7 h-7 max-md:w-9 max-md:h-9 rounded-full border-0 cursor-pointer text-[14px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{ background: 'rgba(255,79,100,0.85)', color: '#fff' }}>×</button>
               <button type="button" onClick={() => fileRef.current?.click()}
-                className="absolute bottom-2 right-2 rounded-lg border-0 px-3 py-1.5 text-[11px] font-bold cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                className="touch-visible absolute bottom-2 right-2 rounded-lg border-0 px-3 py-1.5 max-md:min-h-10 text-[11px] font-bold cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{ background: 'rgba(111,99,255,0.85)', color: '#fff' }}>
                 Солих
               </button>
@@ -117,11 +118,11 @@ export default function GalleryManager({ initialPhotos }: { initialPhotos: Photo
                 </label>
                 <input value={addAlt} onChange={e => setAddAlt(e.target.value)}
                   placeholder="Зургийн тайлбар"
-                  className="rounded-xl px-4 py-3 text-[14px] text-pxwhite outline-none"
+                  className="rounded-xl px-4 py-3 max-md:min-h-12 text-[14px] text-pxwhite outline-none"
                   style={inputStyle} />
               </div>
               <button type="submit" disabled={adding}
-                className="rounded-xl border-0 px-6 py-3 text-[13px] font-bold text-white cursor-pointer shrink-0"
+                className="rounded-xl border-0 px-6 py-3 max-md:min-h-12 text-[13px] font-bold text-white cursor-pointer shrink-0"
                 style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', opacity: adding ? 0.7 : 1 }}>
                 {adding ? 'Хадгалж байна...' : 'Хадгалах'}
               </button>
@@ -136,7 +137,9 @@ export default function GalleryManager({ initialPhotos }: { initialPhotos: Photo
           <div key={photo.id} className="group relative rounded-2xl overflow-hidden"
             style={{ aspectRatio: '1/1', border: '1px solid rgba(111,99,255,0.15)', background: 'rgba(111,99,255,0.04)' }}>
             <img src={photo.src} alt={photo.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            {/* admin-tile-overlay: on touch devices globals.css turns this hover veil
+                into an always-visible bottom scrim so Delete stays reachable */}
+            <div className="admin-tile-overlay absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               style={{ background: 'rgba(5,5,13,0.75)', backdropFilter: 'blur(4px)' }}>
               <p className="text-[9px] font-mono px-2 text-center break-all" style={{ color: 'rgba(184,194,221,0.7)' }}>
                 {photo.src.split('/').pop()}

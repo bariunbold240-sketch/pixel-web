@@ -18,7 +18,9 @@ export default function AppNav({ cur, go }: AppNavProps) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 mx-auto flex items-center justify-between px-[clamp(18px,5vw,52px)] py-2">
+      {/* .app-nav gets a blurred backdrop below 768px (globals.css) — mobile scroll
+          mode passes content under the header; deck mode never does */}
+      <nav className="app-nav fixed top-0 left-0 right-0 z-40 mx-auto flex items-center justify-between px-[clamp(18px,5vw,52px)] py-2">
         {/* Logo + brand name */}
         <div className="flex items-center shrink-0">
           <button
@@ -33,23 +35,9 @@ export default function AppNav({ cur, go }: AppNavProps) {
           </p>
         </div>
 
-        {/* Mobile (<820px): lang toggle + hamburger button */}
+        {/* Mobile (<820px): hamburger only — the lang toggle lives inside the
+            menu overlay so the header stays logo + one action */}
         <div className="flex tablet:hidden items-center gap-2">
-          <div className="flex items-center gap-[3px] p-[3px] rounded-[10px] bg-glass border border-line">
-            {(['mn', 'en'] as const).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className={`font-heading font-bold text-[9px] px-2.5 py-[5px] min-h-11 rounded-[10px] uppercase tracking-[0.06em] border-0 cursor-pointer transition-all duration-[250ms] ${
-                  lang === l
-                    ? 'text-white [background:linear-gradient(90deg,#6f63ff,#ff4fd8)] shadow-[0_4px_14px_rgba(111,99,255,0.35)]'
-                    : 'text-mute bg-transparent hover:text-pxwhite'
-                }`}
-              >
-                {l === 'mn' ? 'МН' : 'ENG'}
-              </button>
-            ))}
-          </div>
           <button
             onClick={() => setOpen(o => !o)}
             aria-label={open ? 'Цэс хаах' : 'Цэс нээх'}
@@ -96,22 +84,31 @@ export default function AppNav({ cur, go }: AppNavProps) {
         </div>
       </nav>
 
-      {/* Mobile dropdown — vertical nav list, closes on item tap */}
+      {/* Mobile dropdown — vertical nav list, closes on item tap or outside tap */}
       {open && (
-        <div
-          className="tablet:hidden fixed top-[64px] left-0 right-0 z-[39] flex flex-col"
-          style={{
-            background: 'rgba(5,5,20,0.97)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            borderBottom: '1px solid rgba(111,99,255,0.18)',
-          }}
-        >
+        <>
+          {/* Invisible backdrop: tap anywhere outside the menu to close it */}
+          <div
+            className="tablet:hidden fixed inset-0 z-[38]"
+            onClick={close}
+            aria-hidden="true"
+          />
+          {/* top-[72px] = nav height: py-2 (16px) + h-14 logo (56px) */}
+          <div
+            className="tablet:hidden fixed top-[72px] left-0 right-0 z-[39] flex flex-col rounded-b-2xl overflow-y-auto max-h-[calc(100dvh-88px)]"
+            style={{
+              background: 'rgba(5,5,20,0.97)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              borderBottom: '1px solid rgba(111,99,255,0.18)',
+              boxShadow: '0 24px 48px rgba(0,0,0,0.5)',
+            }}
+          >
           {t.nav.map((label, i) => (
             <button
               key={i}
               onClick={() => { go(i + 1); close() }}
-              className="w-full text-left px-6 py-4 border-0 cursor-pointer transition-colors duration-200"
+              className="w-full text-left px-6 py-4 min-h-12 border-0 cursor-pointer transition-colors duration-200"
               style={{
                 background: 'transparent',
                 color: cur === i + 1 ? '#ff4fd8' : 'rgba(247,249,255,0.75)',
@@ -128,7 +125,30 @@ export default function AppNav({ cur, go }: AppNavProps) {
               {label}
             </button>
           ))}
-        </div>
+
+          {/* Language toggle — relocated from the header into the menu */}
+          <div className="flex items-center justify-between px-6 py-4">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(184,194,221,0.4)' }}>
+              {lang === 'mn' ? 'Хэл' : 'Language'}
+            </span>
+            <div className="flex items-center gap-[3px] p-[3px] rounded-[10px] bg-glass border border-line">
+              {(['mn', 'en'] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`font-heading font-bold text-[11px] px-4 py-2 min-h-11 rounded-[10px] uppercase tracking-[0.06em] border-0 cursor-pointer transition-all duration-[250ms] ${
+                    lang === l
+                      ? 'text-white [background:linear-gradient(90deg,#6f63ff,#ff4fd8)] shadow-[0_4px_14px_rgba(111,99,255,0.35)]'
+                      : 'text-mute bg-transparent hover:text-pxwhite'
+                  }`}
+                >
+                  {l === 'mn' ? 'МН' : 'ENG'}
+                </button>
+              ))}
+            </div>
+          </div>
+          </div>
+        </>
       )}
     </>
   )

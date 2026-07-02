@@ -348,6 +348,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
   const textKey     = useRef(0)
   const busyRef     = useRef(false)
   const idxRef      = useRef(0)
+  const swipeRef    = useRef<{ x: number; y: number } | null>(null)
   const totalCount  = projects.length
   const stripIcons   = techIcons.length > 0 ? techIcons : DEFAULT_TECH_ICONS
 
@@ -529,9 +530,11 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
       <div className="panel-inner self-padded w-full flex flex-col md:flex-row md:h-full">
 
         {/* ── LEFT: project info ── */}
+        {/* Mobile: flat 20px gutter (site-wide rhythm) + 80px top clearance under the
+            fixed header; md+ keeps the original clamp formula pixel-for-pixel */}
         <div
-          className="shrink-0 flex flex-col md:justify-center relative overflow-hidden w-full md:w-[46%] md:h-full lg:w-[48%]"
-          style={{ padding: 'clamp(28px,5vw,80px)', paddingTop: 'max(80px, clamp(28px,5vw,80px))' }}
+          className="shrink-0 flex flex-col md:justify-center relative overflow-hidden w-full md:w-[46%] md:h-full lg:w-[48%]
+                     p-5 pt-20 md:p-[clamp(28px,5vw,80px)] md:pt-[max(80px,clamp(28px,5vw,80px))]"
         >
           <div
             className="pointer-events-none absolute w-[420px] h-[420px] rounded-full"
@@ -550,11 +553,28 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
 
         {/* ── RIGHT: overlapping mockup cards ── */}
         {/* touch-action:none is deck-mode (md+) behavior only — on mobile normal-scroll
-            it would block the page from scrolling when a swipe starts on the mockup */}
+            it would block the page from scrolling when a swipe starts on the mockup.
+            Horizontal swipes on the mockup flip between projects (touch devices only);
+            mostly-vertical swipes fall through to normal page scrolling. */}
         <div
           ref={rightColRef}
           className="w-full aspect-[16/10] md:aspect-auto md:flex-1 md:h-full lg:flex-1 relative overflow-hidden
                      md:touch-none md:overscroll-none"
+          onTouchStart={(e) => {
+            const t = e.touches[0]
+            swipeRef.current = { x: t.clientX, y: t.clientY }
+          }}
+          onTouchEnd={(e) => {
+            const start = swipeRef.current
+            swipeRef.current = null
+            if (!start) return
+            const t = e.changedTouches[0]
+            const dx = t.clientX - start.x
+            const dy = t.clientY - start.y
+            if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.5) return
+            const dir = (dx < 0 ? 1 : -1) as 1 | -1
+            goTo(idxRef.current + dir, dir)
+          }}
         >
           {projects.map((proj, i) => (
             <div
@@ -604,6 +624,25 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* ── Partner icon strip — mobile only. Desktop keeps the marquee at lg;
+            deck-mode tablets have no room in the fixed-height panel. ── */}
+        <div className="md:hidden px-5 pb-2">
+          <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-3" style={{ color: `${p.accent}99` }}>
+            {mn ? 'Хамтрагч байгууллагууд' : 'Our Partners'}
+          </p>
+          <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-proximity pb-1">
+            {stripIcons.map((icon, i) => (
+              <div
+                key={`${i}-${icon.label}`}
+                className="snap-start shrink-0 w-18 h-18 rounded-2xl flex items-center justify-center"
+                style={{ background: 'rgba(18,24,44,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}
+              >
+                <img src={icon.src} alt={icon.label} className="w-11 h-11 object-contain" loading="lazy" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

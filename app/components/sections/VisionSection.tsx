@@ -43,8 +43,8 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
       <div ref={innerRef} className="panel-inner h-full w-full flex flex-col max-w-[1440px] mx-auto
                       px-[clamp(28px,6vw,96px)] pt-20 md:pt-[clamp(80px,10vh,110px)] pb-8">
 
-        {/* Header */}
-        <div className="mb-5 lg:mb-10 flex items-end justify-between">
+        {/* Header — column on mobile so the Vision 2025 badge sits under the title */}
+        <div className="mb-5 lg:mb-10 flex items-end justify-between max-md:flex-col max-md:items-start max-md:gap-3">
           <div>
             <p data-anim className="text-[11px] font-bold tracking-[0.22em] uppercase text-hot mb-3">
               <TypewriterText text={mn ? '02 — Алсын Харааа · Үнэт Зүйл' : '02 — Vision · Values'} active={active} speed={22} delay={150} />
@@ -57,8 +57,8 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
             </h2>
           </div>
 
-          {/* Status pill */}
-          <div data-anim className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full"
+          {/* Status pill — was hidden on mobile; now drops under the title there */}
+          <div data-anim className="flex items-center gap-2 px-4 py-2 rounded-full"
             style={{ background: 'rgba(111,99,255,0.1)', border: '1px solid rgba(111,99,255,0.25)' }}>
             <span className="w-2 h-2 rounded-full"
               style={{ background: '#6f63ff', boxShadow: '0 0 6px rgba(111,99,255,0.8)' }} />
@@ -109,7 +109,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
             </p>
 
             {/* Divider + stats */}
-            <div className="mt-7 pt-6 grid grid-cols-3 gap-6"
+            <div className="mt-7 pt-6 grid grid-cols-3 gap-4 md:gap-6"
               style={{ borderTop: '1px solid rgba(111,99,255,0.12)' }}>
               {STATS.map((s) => (
                 <div key={s.n} className="flex flex-col gap-1.5">
