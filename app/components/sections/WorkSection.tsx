@@ -34,6 +34,7 @@ const PROJECTS = [
     ],
     accent: '#15a59a',
     mockupGrad: 'linear-gradient(135deg, #0d4f4a 0%, #0a3d55 50%, #05050d 100%)',
+    img: '/portfolio/gymhub.png',
   },
   {
     num: '05',
@@ -50,6 +51,7 @@ const PROJECTS = [
     ],
     accent: '#6f63ff',
     mockupGrad: 'linear-gradient(135deg, #1a1060 0%, #2d1b6e 50%, #05050d 100%)',
+    img: '/portfolio/novaMind.png',
   },
   {
     num: '06',
@@ -66,6 +68,7 @@ const PROJECTS = [
     ],
     accent: '#ff4fd8',
     mockupGrad: 'linear-gradient(135deg, #4d0035 0%, #7a0055 50%, #05050d 100%)',
+    img: '/portfolio/bluebell_flower.png',
   },
 ]
 
@@ -390,11 +393,11 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
             >
               <div className="relative w-full" style={{ maxWidth: 500 }}>
                 <div
-                  className="relative rounded-2xl overflow-hidden mockup-shine"
+                  className="relative rounded-2xl overflow-hidden mockup-shine flex flex-col"
                   style={{ background: proj.mockupGrad, aspectRatio: '16/10', boxShadow: `0 40px 80px -20px ${proj.accent}44, 0 0 0 1px rgba(255,255,255,0.06)` }}
                 >
                   <div
-                    className="flex items-center gap-1.5 px-4 py-2.5 border-b"
+                    className="flex items-center gap-1.5 px-4 py-2.5 border-b shrink-0"
                     style={{ borderColor: `${proj.accent}22`, background: 'rgba(0,0,0,0.3)' }}
                   >
                     <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
@@ -402,17 +405,13 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
                     <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
                     <div className="ml-3 flex-1 h-5 rounded-md" style={{ background: 'rgba(255,255,255,0.06)' }} />
                   </div>
-                  <div className="mockup-body p-5 flex flex-col gap-3 h-full">
-                    <div className="flex gap-3">
-                      <div className="mockup-block rounded-xl flex-1 h-14" style={{ background: `${proj.accent}22` }} />
-                      <div className="mockup-block rounded-xl flex-1 h-14" style={{ background: `${proj.accent}16` }} />
-                      <div className="mockup-block rounded-xl flex-1 h-14" style={{ background: `${proj.accent}0c` }} />
-                    </div>
-                    <div className="mockup-block rounded-xl flex-1" style={{ background: `${proj.accent}10` }} />
-                    <div className="flex gap-3">
-                      <div className="mockup-block rounded-xl h-8 flex-1" style={{ background: `${proj.accent}18` }} />
-                      <div className="mockup-block rounded-xl h-8 w-24" style={{ background: `linear-gradient(90deg,${proj.accent}99,${proj.accent}55)` }} />
-                    </div>
+                  <div className="mockup-body relative flex-1 min-h-0 overflow-hidden">
+                    <img
+                      src={proj.img}
+                      alt={mn ? proj.title.mn.join(' ') : proj.title.en.join(' ')}
+                      className="absolute inset-0 w-full h-full object-cover object-top"
+                      loading="lazy"
+                    />
                   </div>
                 </div>
                 <div className="mt-1 mx-8 h-3 rounded-b-lg" style={{ background: 'rgba(255,255,255,0.06)' }} />

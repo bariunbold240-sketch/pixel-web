@@ -435,20 +435,6 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     scroll-snap-align: none !important;
   }
 
-  /* ── WORK / GYMHUB ── */
-  /* Browser mockup card: header + body weren't in a flex column, so the
-     body's h-full added on top of the header's own height and the overflow
-     got clipped, cutting off the bottom of the banner content. */
-  .mockup-shine { display: flex; flex-direction: column; }
-  .mockup-body { flex: 1 1 auto; height: auto; min-height: 0; }
-  /* Content blocks: accent-tinted backgrounds are only 5–13% opacity, which
-     reads as empty/dark against the mockup gradient on small screens. */
-  .mockup-block {
-    opacity: 1;
-    filter: brightness(1.9) saturate(1.4);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-
   /* ── PACKAGES ── */
   /* InfoPanel contact cards: truncate was clipping labels/values (e.g.
      "Бидэнтэй хо…") — let text wrap instead of being cut off. */
