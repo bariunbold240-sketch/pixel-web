@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Montserrat, Inter } from 'next/font/google'
 import './globals.css'
 import Providers from './components/Providers'
@@ -18,6 +18,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'PIXEL — Танилцуулга',
   description: 'PIXEL Social Media Mongolia — Зөв мессеж · Зөв зах зээл',
+}
+
+// viewport-fit=cover lets the fixed bottom nav extend under the iPhone home
+// indicator; env(safe-area-inset-bottom) paddings keep its content clear of it.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

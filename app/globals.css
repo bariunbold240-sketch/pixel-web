@@ -85,7 +85,8 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     overflow-y: visible;
     align-items: flex-start !important;
     justify-content: flex-start !important;
-    padding-bottom: 80px; /* room for bottom nav + breathing space */
+    /* room for bottom nav + iOS home indicator + breathing space */
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
   .panel-inner {
     height: auto !important;
@@ -394,10 +395,12 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
 
 /* ════════════════════════════════════════════════════════════════
-   MOBILE RESPONSIVE  ≤ 768px
-   All rules are INSIDE this block. Desktop (> 768px) is untouched.
+   MOBILE RESPONSIVE  ≤ 767px
+   All rules are INSIDE this block. Kept on the same 767px line as the
+   deck→scroll switch above and JS isMobile (< 768) so no width — e.g.
+   iPad portrait at exactly 768px — gets a mix of deck + mobile rules.
    ════════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 
   /* Prevent horizontal scroll on every page */
   html, body { overflow-x: hidden; }
@@ -409,37 +412,25 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
   .glow-orb { z-index: 0; }
   .panel-inner { position: relative; z-index: 1; }
 
-  /* ── HERO ── */
-  /* Both CTA buttons: always full-width stacked column */
-  .hero-btns { flex-direction: column !important; gap: 10px; }
-  .hero-btns > * { width: 100% !important; box-sizing: border-box; }
+  /* ── NAV ── */
+  /* In scroll mode content passes under the fixed header — give it a
+     backdrop so text doesn't collide with the logo/hamburger. Deck mode
+     (≥768px) never scrolls under the nav, so it stays transparent there. */
+  .app-nav {
+    background: linear-gradient(180deg, rgba(5,5,16,0.92) 0%, rgba(5,5,16,0.78) 100%);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(111,99,255,0.12);
+  }
 
   /* ── TEAM / EXPERIENCE ── */
   /* Hero photo card: stretch to full container width */
   .team-hero-card { max-width: 100% !important; }
 
-  /* ── VISION / VALUES ── */
-  /* Value cards (01/02/03): the horizontal swipe carousel let cards 02/03
-     run off the right edge, so force a full-width vertical stack instead. */
-  .values-scroll {
-    flex-direction: column !important;
-    overflow-x: visible !important;
-    scroll-snap-type: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  .values-scroll .values-card {
-    width: 100% !important;
-    scroll-snap-align: none !important;
-  }
-
   /* ── PACKAGES ── */
   /* InfoPanel contact cards: truncate was clipping labels/values (e.g.
      "Бидэнтэй хо…") — let text wrap instead of being cut off. */
   .info-panel-grid p {
-    font-size: 11px;
     line-height: 1.35;
     white-space: normal;
     overflow: visible;
@@ -453,6 +444,6 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
 
 /* ── Very small phones (≤ 480px) ── */
 @media (max-width: 480px) {
-  /* Tighten section horizontal padding */
-  .panel-inner { padding-left: clamp(16px, 5vw, 28px); padding-right: clamp(16px, 5vw, 28px); }
+  /* Tighten section horizontal padding (.self-padded sections pad their own children) */
+  .panel-inner:not(.self-padded) { padding-left: clamp(16px, 5vw, 28px); padding-right: clamp(16px, 5vw, 28px); }
 }

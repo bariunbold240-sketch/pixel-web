@@ -137,17 +137,14 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
               </span>
             </div>
 
-            {/* Horizontal swipe carousel below 768px (full mobile-width column with room to
-                spare from md: up, where the original vertical stack is restored) */}
-            <div className="values-scroll flex flex-nowrap overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3
-                            -mx-[clamp(28px,6vw,96px)] px-[clamp(28px,6vw,96px)]
-                            md:flex-col md:overflow-visible md:snap-none md:mx-0 md:px-0">
+            {/* Full-width vertical stack on every breakpoint — the old horizontal swipe
+                carousel let cards 02/03 run off the right edge on mobile */}
+            <div className="flex flex-col gap-3">
               {VALUES.map((v, i) => (
                 <div
                   key={i}
                   data-anim
-                  className="values-card shrink-0 w-[78vw] snap-center md:w-auto md:shrink
-                            glass-card rounded-2xl px-5 py-5 group cursor-default relative overflow-hidden"
+                  className="glass-card rounded-2xl px-5 py-5 group cursor-default relative overflow-hidden"
                   style={{ borderLeft: `2px solid ${v.color}55` }}
                 >
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"

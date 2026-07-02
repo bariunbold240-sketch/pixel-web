@@ -119,7 +119,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
         <PricingToggle
           page={page}
           onChange={setPage}
-          labels={mn ? ['1', '2'] : ['Package 1', 'Package 2']}
+          labels={mn ? ['Онцго - 1', 'Бусад - 2'] : ['Package 1', 'Package 2']}
         />
 
         {/* Cards: swipeable carousel on small mobile, 2-up grid from 430px (tablet too), 4-col paginated on desktop */}
@@ -138,7 +138,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                 plan={plan}
                 globalIndex={globalIndex}
                 Icon={PLAN_ICONS[globalIndex % PLAN_ICONS.length]}
-                badgeLabel={mn ? 'Хамгийн түгээмэл' : 'Most Popular'}
+                badgeLabel={mn ? 'Хамгийн онцго' : 'Most Popular'}
               />
             )
           })}

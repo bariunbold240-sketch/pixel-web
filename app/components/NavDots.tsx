@@ -39,6 +39,7 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
           WebkitBackdropFilter: 'blur(24px)',
           borderTop: '1px solid rgba(111,99,255,0.14)',
           minHeight: 56,
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
       >
         {Array.from({ length: N }, (_, i) => {
@@ -75,8 +76,8 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
               />
               {/* Label */}
               <span
-                className="text-[7.5px] font-bold uppercase tracking-[0.08em] transition-colors duration-[250ms] leading-none"
-                style={{ color: active ? '#ff4fd8' : 'rgba(184,194,221,0.3)' }}
+                className="text-[9px] font-bold uppercase tracking-[0.04em] transition-colors duration-[250ms] leading-[1.15] px-0.5 text-center"
+                style={{ color: active ? '#ff4fd8' : 'rgba(184,194,221,0.42)' }}
               >
                 {names[i]}
               </span>

@@ -34,7 +34,7 @@ const PROJECTS = [
     ],
     accent: '#15a59a',
     mockupGrad: 'linear-gradient(135deg, #0d4f4a 0%, #0a3d55 50%, #05050d 100%)',
-    img: '/portfolio/gymhub.png',
+    img: '/portfolio/gymhub.jpg',
   },
   {
     num: '05',
@@ -51,7 +51,7 @@ const PROJECTS = [
     ],
     accent: '#6f63ff',
     mockupGrad: 'linear-gradient(135deg, #1a1060 0%, #2d1b6e 50%, #05050d 100%)',
-    img: '/portfolio/novaMind.png',
+    img: '/portfolio/novaMind.jpg',
   },
   {
     num: '06',
@@ -68,7 +68,7 @@ const PROJECTS = [
     ],
     accent: '#ff4fd8',
     mockupGrad: 'linear-gradient(135deg, #4d0035 0%, #7a0055 50%, #05050d 100%)',
-    img: '/portfolio/bluebell_flower.png',
+    img: '/portfolio/bluebell_flower.jpg',
   },
 ]
 
@@ -357,7 +357,9 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
         </div>
       </div>
 
-      <div className="panel-inner w-full flex flex-col md:flex-row md:h-full">
+      {/* self-padded: children carry their own horizontal padding — opts out of the
+          ≤480px .panel-inner padding override in globals.css (would double up here) */}
+      <div className="panel-inner self-padded w-full flex flex-col md:flex-row md:h-full">
 
         {/* ── LEFT: project info ── */}
         <div
@@ -380,10 +382,12 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
         </div>
 
         {/* ── RIGHT: overlapping mockup cards ── */}
+        {/* touch-action:none is deck-mode (md+) behavior only — on mobile normal-scroll
+            it would block the page from scrolling when a swipe starts on the mockup */}
         <div
           ref={rightColRef}
-          className="w-full aspect-[16/10] md:aspect-auto md:flex-1 md:h-full lg:flex-1 relative overflow-hidden"
-          style={{ overscrollBehavior: 'none', touchAction: 'none' }}
+          className="w-full aspect-[16/10] md:aspect-auto md:flex-1 md:h-full lg:flex-1 relative overflow-hidden
+                     md:touch-none md:overscroll-none"
         >
           {PROJECTS.map((proj, i) => (
             <div

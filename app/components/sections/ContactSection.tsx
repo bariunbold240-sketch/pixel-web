@@ -116,6 +116,8 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
                 <img
                   src="/map-location.jpg"
                   alt={mn ? 'Байршил' : 'Location'}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0"
