@@ -16,7 +16,7 @@ export default function InfoPanel({ mn, phone }: InfoPanelProps) {
   ]
 
   return (
-    <div data-anim className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+    <div data-anim className="info-panel-grid grid grid-cols-2 lg:grid-cols-4 gap-2.5">
       {items.map((item) => (
         <div
           key={item.label}
