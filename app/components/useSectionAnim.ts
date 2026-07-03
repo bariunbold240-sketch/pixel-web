@@ -12,6 +12,9 @@ export function useSectionAnim(active: boolean) {
     // Input-capability check (not a layout breakpoint) — skip hover listeners
     // and the idle hover-demo cycle on touch-only devices where they're dead weight.
     const canHover = typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    // Respect reduced-motion: never hide/animate; content stays visible as-is.
+    const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
 
     // Mobile: once animated, skip re-runs so active-change never re-hides items
     if (mobile && hasAnimated.current) return

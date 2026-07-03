@@ -450,11 +450,22 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
   .contact-map { min-height: 200px !important; max-height: 240px !important; }
 
   /* ── SPACING RHYTHM ── */
-  /* One consistent 20px gutter for every landing section (8pt system).
-     .self-padded sections (Hero, Work) pad their own children to the same 20px. */
+  /* One consistent 20px gutter + vertical rhythm for every landing section
+     (8pt system). .self-padded sections (Hero, Work) pad their own children.
+     Header clearance on nav-tap is handled by scroll-margin-top below, so the
+     top padding can stay a tight, consistent 64px instead of an 80px spacer. */
   .panel-inner:not(.self-padded) {
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 64px;
+    padding-bottom: 28px;
+  }
+
+  /* Nav-tap (scrollIntoView) lands the section just below the fixed ~72px
+     header instead of under it — lets sections use a small top padding without
+     hiding their heading, and kills the big black gap between sections. */
+  .panel {
+    scroll-margin-top: 76px;
   }
 }
 

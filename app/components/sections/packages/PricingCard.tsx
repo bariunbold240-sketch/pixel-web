@@ -32,9 +32,9 @@ export default function PricingCard({ plan, globalIndex, Icon, badgeLabel }: Pri
       data-anim
       data-card
       data-no-hover
-      className={`group relative cursor-default shrink-0 w-[78vw] snap-center xs:w-auto xs:shrink h-full
-                transition-transform duration-300 ease-out hover:-translate-y-2
-                ${isFeatured ? 'scale-[1.03] hover:scale-[1.045]' : 'hover:scale-[1.02]'}`}
+      className={`group relative cursor-default w-full md:w-auto h-full
+                transition-transform duration-300 ease-out md:hover:-translate-y-2 active:scale-[0.985]
+                ${isFeatured ? 'md:scale-[1.03] md:hover:scale-[1.045] max-md:mt-4' : 'md:hover:scale-[1.02]'}`}
     >
       {isFeatured && (
         <motion.div
@@ -76,7 +76,7 @@ export default function PricingCard({ plan, globalIndex, Icon, badgeLabel }: Pri
           />
         )}
 
-        <div className="relative z-10 p-4 lg:p-5 flex flex-col h-full gap-3.5">
+        <div className="relative z-10 p-4 max-md:p-5 lg:p-5 flex flex-col h-full gap-3.5 max-md:gap-4">
           {/* Top: icon + name + number */}
           <div className="flex items-center justify-between">
             <div
@@ -101,7 +101,7 @@ export default function PricingCard({ plan, globalIndex, Icon, badgeLabel }: Pri
           </p>
 
           {/* Middle: feature list */}
-          <ul className="flex flex-col gap-1.5 flex-1">
+          <ul className="flex flex-col gap-1.5 max-md:gap-2.5 flex-1">
             {plan.features.map((f, j) => (
               <PricingFeature key={j} label={f.label} value={f.value} featured={isFeatured} />
             ))}

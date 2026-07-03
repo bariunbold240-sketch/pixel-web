@@ -101,7 +101,17 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
   const pageSize = 4
   const pageCount = isMobile ? 1 : Math.max(1, Math.ceil(plans.length / pageSize))
   const activePage = Math.min(page, pageCount - 1)
-  const plansToShow = isMobile ? plans : plans.slice(activePage * pageSize, activePage * pageSize + pageSize)
+  // Mobile: single-column stack with the featured (Pixel Core) plan first, the
+  // rest in their original order — so badges renumber 01,02,03… top-to-bottom.
+  const mobilePlans = (() => {
+    const fi = plans.findIndex((p) => p.featured)
+    if (fi <= 0) return plans
+    const copy = [...plans]
+    const [featured] = copy.splice(fi, 1)
+    copy.unshift(featured)
+    return copy
+  })()
+  const plansToShow = isMobile ? mobilePlans : plans.slice(activePage * pageSize, activePage * pageSize + pageSize)
   const indexOffset = isMobile ? 0 : activePage * pageSize
 
   const sectionEl    = useRef<HTMLElement | null>(null)
@@ -201,13 +211,12 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
           />
         )}
 
-        {/* Cards: swipeable carousel on small mobile, 2-up grid from 430px (tablet too), 4-col paginated on desktop */}
+        {/* Cards: single-column full-width stack on mobile (<768px), 2-up grid on
+            tablet, 4-col paginated on desktop */}
         <div
           ref={gridRef}
-          className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory no-scrollbar z-10 gap-3 pt-3
-                    -mx-[clamp(28px,6vw,96px)] px-[clamp(28px,6vw,96px)]
-                    xs:grid xs:grid-cols-2 xs:overflow-visible xs:snap-none xs:mx-0 xs:px-0
-                    md:grid-cols-2 lg:grid-cols-4"
+          className="flex flex-col gap-4 pt-3 z-10
+                    md:grid md:grid-cols-2 md:gap-3 lg:grid-cols-4"
         >
           {plansToShow.map((plan, i) => {
             const globalIndex = indexOffset + i
@@ -217,7 +226,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                 plan={plan}
                 globalIndex={globalIndex}
                 Icon={PLAN_ICONS[globalIndex % PLAN_ICONS.length]}
-                badgeLabel={mn ? 'Хамгийн онцго' : 'Most Popular'}
+                badgeLabel={mn ? 'Хамгийн онцгой' : 'Most Popular'}
               />
             )
           })}

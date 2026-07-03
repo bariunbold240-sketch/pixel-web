@@ -105,6 +105,9 @@ export default function Page() {
     let timer: ReturnType<typeof setTimeout>
 
     const onWheel = (e: WheelEvent) => {
+      // Mobile is normal-scroll — never hijack the wheel/trackpad there, or the
+      // page jumps a whole section per scroll instead of scrolling naturally.
+      if (isMobileRef.current) return
       if (Math.abs(e.deltaY) < 10) return   // ignore inertia tail
       e.preventDefault()
       clearTimeout(timer)
@@ -147,6 +150,10 @@ export default function Page() {
   // Hero parallax
   useEffect(() => {
     if (reducedRef.current) return
+    // Mouse-tilt is a desktop pointer affordance. On touch devices pointermove
+    // fires continuously during scrolling, so this would run GSAP on every move
+    // and jank the scroll — skip it where there's no fine hover pointer.
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
     const handleMove = (e: PointerEvent) => {
       if (curRef.current !== 0) return
       const x = e.clientX / window.innerWidth - 0.5

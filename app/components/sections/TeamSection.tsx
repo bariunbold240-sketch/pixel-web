@@ -249,7 +249,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
         </div>
 
         {/* ── Viewer ── */}
-        <div data-anim data-no-hover className="flex-1 min-h-[300px] md:min-h-0 flex gap-5 items-stretch">
+        <div data-anim data-no-hover className="flex-1 min-h-0 flex gap-5 items-stretch">
 
           {/*
             Hero ZONE — takes remaining width, centers the card.
@@ -417,7 +417,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
 
         {/* ── Footer ── */}
         <div
-          className="mt-4 pt-4 flex items-center justify-between shrink-0"
+          className="mt-4 pt-4 max-md:mt-3 max-md:pt-3 flex items-center justify-between shrink-0"
           style={{ borderTop: '1px solid rgba(111,99,255,0.16)' }}
         >
           <span className="section-num">03 / 06</span>

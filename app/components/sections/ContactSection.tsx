@@ -238,7 +238,7 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
 
               <a
                 href={`tel:${contactPhone.replace(/\s/g, '')}`}
-                className="mt-auto w-full py-3 max-md:min-h-12 max-md:flex max-md:items-center max-md:justify-center rounded-xl text-[13px] font-bold uppercase tracking-wider text-center cursor-pointer border-0 transition-opacity duration-[250ms] hover:opacity-90 no-underline"
+                className="mt-auto w-full py-3 max-md:min-h-[52px] max-md:flex max-md:items-center max-md:justify-center rounded-xl text-[13px] font-bold uppercase tracking-wider text-center cursor-pointer border-0 transition-[opacity,transform] duration-[250ms] hover:opacity-90 active:scale-[0.98] no-underline"
                 style={{ background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', color: '#fff', boxShadow: '0 8px 28px rgba(111,99,255,0.3)', display: 'block' }}
               >
                 {mn ? 'Залгах →' : 'Call →'}
@@ -249,19 +249,21 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-4" style={{ color: 'rgba(184,194,221,0.45)' }}>
                 {mn ? 'Сошиал хаяг' : 'Social Media'}
               </p>
-              <div className="grid grid-cols-4 gap-2">
+              {/* 2x2 on mobile (bigger tap targets, equal heights), 4-across on desktop */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-2">
                 {SOCIALS.map((s) => (
                   <a
                     key={s.label}
                     href={s.href}
-                    className="flex flex-col items-center gap-1.5 py-3 rounded-xl cursor-pointer
-                               transition-all duration-[250ms] hover:scale-105 group"
+                    className="flex flex-col items-center justify-center gap-1.5 py-3 max-md:py-4 rounded-xl cursor-pointer
+                               transition-all duration-[250ms] hover:scale-105 active:scale-95 group"
                     style={{ background: 'rgba(111,99,255,0.08)', border: '1px solid rgba(111,99,255,0.15)' }}
                   >
-                    <span className="text-[13px] font-black text-pxwhite/60 group-hover:text-hot transition-colors">
-                      {s.icon && <s.icon size={10} />}
+                    <span className="text-pxwhite/60 group-hover:text-hot transition-colors">
+                      {s.icon && <s.icon className="max-md:hidden" size={10} />}
+                      {s.icon && <s.icon className="hidden max-md:block" size={15} />}
                     </span>
-                    <span className="text-[9px] text-mute/40 uppercase tracking-wider">{s.label}</span>
+                    <span className="text-[9px] max-md:text-[10px] text-mute/40 uppercase tracking-wider">{s.label}</span>
                   </a>
                 ))}
               </div>

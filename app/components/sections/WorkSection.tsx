@@ -534,7 +534,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
             fixed header; md+ keeps the original clamp formula pixel-for-pixel */}
         <div
           className="shrink-0 flex flex-col md:justify-center relative overflow-hidden w-full md:w-[46%] md:h-full lg:w-[48%]
-                     p-5 pt-20 md:p-[clamp(28px,5vw,80px)] md:pt-[max(80px,clamp(28px,5vw,80px))]"
+                     p-5 pt-12 md:p-[clamp(28px,5vw,80px)] md:pt-[max(80px,clamp(28px,5vw,80px))]"
         >
           <div
             className="pointer-events-none absolute w-[420px] h-[420px] rounded-full"
@@ -628,15 +628,22 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
 
         {/* ── Partner icon strip — mobile only. Desktop keeps the marquee at lg;
             deck-mode tablets have no room in the fixed-height panel. ── */}
-        <div className="md:hidden px-5 pb-2">
-          <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-3" style={{ color: `${p.accent}99` }}>
+        <div className="md:hidden pb-2">
+          <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-3 px-5" style={{ color: `${p.accent}99` }}>
             {mn ? 'Хамтрагч байгууллагууд' : 'Our Partners'}
           </p>
-          <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-proximity pb-1">
+          {/* Edge fade masks hint that the row scrolls horizontally */}
+          <div
+            className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-proximity pb-1 px-5"
+            style={{
+              maskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%)',
+            }}
+          >
             {stripIcons.map((icon, i) => (
               <div
                 key={`${i}-${icon.label}`}
-                className="snap-start shrink-0 w-18 h-18 rounded-2xl flex items-center justify-center"
+                className="snap-start shrink-0 w-18 h-18 rounded-2xl flex items-center justify-center transition-transform duration-150 active:scale-95"
                 style={{ background: 'rgba(18,24,44,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}
               >
                 <img src={icon.src} alt={icon.label} className="w-11 h-11 object-contain" loading="lazy" />
