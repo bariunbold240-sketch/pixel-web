@@ -1,3 +1,4 @@
+import type { Package } from '@prisma/client'
 import { prisma } from '@/lib/db'
 import PackagesManager from './PackagesManager'
 
@@ -28,7 +29,7 @@ function normalizeFeatures(features: unknown): Feature[] {
 
 export default async function AdminPackagesPage() {
   const packages = await prisma.package.findMany({ orderBy: { order: 'asc' } })
-  const initialPackages = packages.map((pkg) => ({
+  const initialPackages = packages.map((pkg: Package) => ({
     ...pkg,
     features: normalizeFeatures(pkg.features),
   }))

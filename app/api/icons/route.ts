@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import type { TechIcon } from '@prisma/client'
 import { prisma } from '@/lib/db'
 import { resolvePublicAsset } from '@/lib/project-assets'
 
@@ -7,7 +8,7 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   const rawIcons = await prisma.techIcon.findMany({ orderBy: { order: 'asc' } })
   const icons = await Promise.all(
-    rawIcons.map(async (icon) => ({
+    rawIcons.map(async (icon: TechIcon) => ({
       ...icon,
       src: await resolvePublicAsset(icon.src),
     })),
