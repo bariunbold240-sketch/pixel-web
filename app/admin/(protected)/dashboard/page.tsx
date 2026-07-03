@@ -28,7 +28,7 @@ export default async function AdminDashboardPage() {
       color:  '#ff4fd8',
       letter: '🖼',
     })),
-    ...recentIcons.map(ic => ({
+    ...recentIcons.map((ic: { label: string }) => ({
       label:  ic.label,
       sub:    'Icon нэмэгдсэн',
       color:  '#6f63ff',
