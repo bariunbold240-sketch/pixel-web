@@ -9,7 +9,12 @@ interface HeroSectionProps {
   active: boolean
   ready: boolean
   sectionRef: (el: HTMLElement | null) => void
+  go: (n: number) => void
 }
+
+// Section indices in the deck (see app/page.tsx): 4 = Packages, 5 = Contact.
+const PACKAGES_SECTION = 4
+const CONTACT_SECTION = 5
 
 const STATS = [
   { value: '120+', mn: 'ажилттай төсөл',  en: 'completed projects' },
@@ -18,7 +23,7 @@ const STATS = [
   { value: '100%', mn: 'сэтгэл ханамж',   en: 'satisfaction'       },
 ]
 
-export default function HeroSection({ active, ready, sectionRef }: HeroSectionProps) {
+export default function HeroSection({ active, ready, sectionRef, go }: HeroSectionProps) {
   const innerRef = useRef<HTMLDivElement>(null)
   const { lang } = useLang()
   const mn = lang === 'mn'
@@ -158,10 +163,10 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
           {/* Full-width stacked column on mobile (<768px), inline row from md — same
               767/768 line as the deck→scroll switch */}
           <div className="hero-btns flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 mt-8">
-            <button className="w-full md:w-auto max-md:min-h-12 rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 active:scale-[0.98] transition-[opacity,transform]">
+            <button onClick={() => go(CONTACT_SECTION)} className="w-full md:w-auto max-md:min-h-12 rounded-xl bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90 active:scale-[0.98] transition-[opacity,transform]">
               {mn ? 'ХОЛБОО БАРИХ' : 'GET IN TOUCH'}
             </button>
-            <button className="w-full md:w-auto max-md:min-h-12 rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 active:scale-[0.98] transition-[border-color,background-color,transform]">
+            <button onClick={() => go(PACKAGES_SECTION)} className="w-full md:w-auto max-md:min-h-12 rounded-xl border border-line bg-transparent px-6 py-3 text-sm font-bold text-pxwhite hover:border-hot hover:bg-white/5 active:scale-[0.98] transition-[border-color,background-color,transform]">
               {mn ? 'БАГЦ' : 'PACKAGES'}
             </button>
           </div>

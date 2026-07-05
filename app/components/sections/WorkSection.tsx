@@ -627,35 +627,39 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
           ))}
         </div>
 
-        {/* ── Partner icon strip — mobile only. Desktop keeps the marquee at lg;
-            deck-mode tablets have no room in the fixed-height panel. ── */}
-        <div className="md:hidden pb-2">
+        {/* ── Partner icon strip — mobile only. Auto-scrolls like the desktop
+            marquee: the row is duplicated so translateX(-50%) loops seamlessly.
+            Honors prefers-reduced-motion via the global `* { animation: none }` rule
+            (then it just sits static). ── */}
+        <div className="md:hidden pb-2 overflow-hidden">
           <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-3 px-5" style={{ color: `${p.accent}99` }}>
             {mn ? 'Хамтрагч байгууллагууд' : 'Our Partners'}
           </p>
-          {/* Edge fade masks hint that the row scrolls horizontally */}
+          {/* Edge fade masks soften where the moving row enters/leaves view */}
           <div
-            className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-proximity pb-1 px-5"
+            className="overflow-hidden"
             style={{
-              // snap-start aligned the first item to x=0 (under the fade) → CarCare
-              // was clipped. scroll-padding keeps snapped items inside the opaque band.
-              scrollPaddingLeft: '20px',
-              scrollPaddingRight: '20px',
-              // Fade masks hint horizontal scroll; left fade ends at 20px so the first
-              // logo (padded 20px) stays fully visible, wider 40px fade on the right.
-              maskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 40px), transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 40px), transparent 100%)',
+              maskImage: 'linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)',
             }}
           >
-            {stripIcons.map((icon, i) => (
-              <div
-                key={`${i}-${icon.label}`}
-                className="snap-start shrink-0 w-18 h-18 rounded-2xl flex items-center justify-center transition-transform duration-150 active:scale-95"
-                style={{ background: 'rgba(18,24,44,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}
-              >
-                <img src={icon.src} alt={icon.label} className="w-11 h-11 object-contain" loading="lazy" />
-              </div>
-            ))}
+            {/* Duplicated 4× so even a short partner list always fills the row and
+                the -50% loop point lands on an identical copy. */}
+            <div className="flex w-max marquee-left" style={{ animationDuration: '16s' }}>
+              {[...stripIcons, ...stripIcons, ...stripIcons, ...stripIcons].map((icon, i) => {
+                const dup = i >= stripIcons.length
+                return (
+                  <div
+                    key={`${i}-${icon.label}`}
+                    aria-hidden={dup || undefined}
+                    className="shrink-0 w-18 h-18 mr-3 rounded-2xl flex items-center justify-center"
+                    style={{ background: 'rgba(18,24,44,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  >
+                    <img src={icon.src} alt={dup ? '' : icon.label} className="w-11 h-11 object-contain" loading="lazy" />
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>

@@ -188,7 +188,7 @@ export default function Page() {
 
       {/* Deck */}
       <div className="panel-deck fixed inset-0 z-[2]">
-        <HeroSection      active={cur === 0} ready={loadingDone} sectionRef={ref(0)} />
+        <HeroSection      active={cur === 0} ready={loadingDone} sectionRef={ref(0)} go={go} />
         <VisionSection    active={cur === 1} sectionRef={ref(1)} />
         <TeamSection      active={cur === 2} sectionRef={ref(2)} />
         <WorkSection      active={cur === 3} sectionRef={ref(3)} />
