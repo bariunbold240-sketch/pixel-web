@@ -99,20 +99,15 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
   }, [])
 
   const pageSize = 4
-  const pageCount = isMobile ? 1 : Math.max(1, Math.ceil(plans.length / pageSize))
+  const pageCount = Math.max(1, Math.ceil(plans.length / pageSize))
   const activePage = Math.min(page, pageCount - 1)
-  // Mobile: single-column stack with the featured (Pixel Core) plan first, the
-  // rest in their original order — so badges renumber 01,02,03… top-to-bottom.
-  const mobilePlans = (() => {
-    const fi = plans.findIndex((p) => p.featured)
-    if (fi <= 0) return plans
-    const copy = [...plans]
-    const [featured] = copy.splice(fi, 1)
-    copy.unshift(featured)
-    return copy
-  })()
-  const plansToShow = isMobile ? mobilePlans : plans.slice(activePage * pageSize, activePage * pageSize + pageSize)
-  const indexOffset = isMobile ? 0 : activePage * pageSize
+  // Same paginated 4-up view on every breakpoint (mobile stacks them in one column).
+  // Keeping the original order means each card keeps its real number — the featured
+  // Pixel Core plan stays "02" instead of being renumbered to "01" by a mobile-only
+  // reorder — and it still stands out via its scale/glow/badge styling wherever it sits.
+  // Paginating on mobile too restores the 01/02 page toggle for the second plan set.
+  const plansToShow = plans.slice(activePage * pageSize, activePage * pageSize + pageSize)
+  const indexOffset = activePage * pageSize
 
   const sectionEl    = useRef<HTMLElement | null>(null)
   const gridRef      = useRef<HTMLDivElement | null>(null)
@@ -174,6 +169,14 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
       ref={(el) => { sectionEl.current = el; sectionRef(el) }}
     >
 
+      {/* Mobile-only ambient glow behind the featured plan — soft purple so the
+          pricing block doesn't read flat. Contained by the panel's overflow-x:clip. */}
+      <div
+        className="mobile-ambient md:hidden"
+        aria-hidden="true"
+        style={{ top: '26%', left: '50%', transform: 'translateX(-50%)', width: '75vw', height: '75vw', background: 'radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%)' }}
+      />
+
       {/* Glow orbs — unchanged */}
       <div className="glow-orb w-[500px] h-[500px] top-[-20%] left-[30%]"
         style={{ background: 'radial-gradient(circle, rgba(111,99,255,0.22) 0%, transparent 70%)' }} />
@@ -187,7 +190,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                       px-[clamp(28px,6vw,96px)] pt-20 md:pt-[clamp(72px,9vh,100px)] pb-8">
 
         {/* Header */}
-        <div className="text-center mb-2 mt-2">
+        <div className="text-center mb-2 mt-2 max-md:mt-0">
           <p data-anim className="text-[11px] font-bold tracking-[0.22em] uppercase text-hot mb-2">
             <TypewriterText text={mn ? '05 — Багц' : '05 — Packages'} active={active} speed={22} delay={150} />
           </p>

@@ -23,15 +23,21 @@
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 
 @media (max-width: 767px) {
+  /* Natural, native document scroll on mobile — the viewport scrolls the whole
+     document, exactly like an ordinary website: the browser URL bar collapses on
+     scroll-down and momentum/fling feels native. overflow-x:clip blocks sideways
+     scroll WITHOUT turning <body> into its own scroll container (which
+     overflow-x:hidden would, by coercing overflow-y to auto). */
   html {
     height: auto;
-    overflow-x: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
     overscroll-behavior: auto;
   }
   body {
     height: auto;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
     max-width: 100%;
     overscroll-behavior: auto;
     /* clearance for the fixed 64px bottom tab bar + iOS home indicator —
@@ -93,7 +99,9 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     overflow-y: visible;
     align-items: flex-start !important;
     justify-content: flex-start !important;
-    padding-bottom: 8px;
+    /* Seam control lives on .panel-inner's bottom padding — keep the panel itself
+       flush so consecutive sections don't stack an extra gap between them. */
+    padding-bottom: 0;
   }
   .panel-inner {
     height: auto !important;
@@ -409,8 +417,9 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
 
-  /* Prevent horizontal scroll on every page */
-  html, body { overflow-x: hidden; }
+  /* Prevent horizontal scroll on every page — clip (not hidden) so <body> stays a
+     non-scroll-container and native document scrolling is preserved. */
+  html, body { overflow-x: clip; }
 
   /* ── WebGL Orb: hide on mobile — it overlaps text in scroll mode ── */
   .site-orb { display: none; }
@@ -423,11 +432,20 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
   /* In scroll mode content passes under the fixed header — give it a
      backdrop so text doesn't collide with the logo/hamburger. Deck mode
      (≥768px) never scrolls under the nav, so it stays transparent there. */
+  /* At the top of the page the header is transparent so the hero flows under it
+     elegantly; AppNav toggles .scrolled once the body scrolls, fading in a blurred
+     backdrop. (Desktop is deck-mode — the body never scrolls — so it never gets
+     .scrolled and stays transparent, identical to before.) */
   .app-nav {
-    background: linear-gradient(180deg, rgba(5,5,16,0.92) 0%, rgba(5,5,16,0.78) 100%);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(111,99,255,0.12);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease;
+  }
+  .app-nav.scrolled {
+    background: rgba(5, 5, 8, 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   /* ── TEAM / EXPERIENCE ── */
@@ -457,8 +475,11 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
   .panel-inner:not(.self-padded) {
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 64px;
-    padding-bottom: 28px;
+    /* One consistent vertical rhythm: ~52px top clears the fixed header, 12px
+       bottom + the panel's 0 bottom-pad means the seam between two sections is a
+       single ~64px band instead of stacked paddings (was 64+28+8 ≈ 100px dead space). */
+    padding-top: 52px;
+    padding-bottom: 12px;
   }
 
   /* Nav-tap (scrollIntoView) lands the section just below the fixed ~72px
@@ -492,4 +513,53 @@ h1, h2, h3, h4 { font-family: var(--font-heading); }
     padding-bottom: 10px;
   }
   .admin-tile-overlay button { min-height: 40px; padding-inline: 16px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE PREMIUM POLISH  ≤ 767px  (desktop untouched)
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* ── Hero PIXEL title: keep the desktop gradient + glow, a touch stronger so
+     it doesn't read flat on a small black screen ── */
+  .hero-title .ch {
+    filter: drop-shadow(0 8px 30px rgba(111, 99, 255, 0.42))
+            drop-shadow(0 2px 10px rgba(255, 79, 216, 0.28));
+  }
+
+  /* ── Work portfolio stat cards: force an identical opaque surface so the 3rd
+     card (over a darker part of the section) can't look dimmer than the others.
+     backdrop-filter sampling made them inconsistent. ── */
+  .work-stat-card {
+    background: rgba(18, 24, 44, 0.6) !important;
+    border-color: rgba(111, 99, 255, 0.18) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ── Ambient glow layers: contained decorative radials that keep mobile from
+     feeling flat-black. pointer-events:none + behind content; parent panels are
+     overflow-x:clip so these never cause horizontal scroll. ── */
+  .mobile-ambient {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(40px);
+  }
+}
+
+/* ── Touch feedback: press-scale for cards/buttons on touch devices only, so
+   desktop mouse rendering is unchanged. ── */
+@media (hover: none) and (max-width: 767px) {
+  .glass-card,
+  .work-stat-card,
+  button,
+  a[role="button"] {
+    transition: transform 0.15s ease;
+  }
+  .glass-card:active,
+  .work-stat-card:active,
+  button:active {
+    transform: scale(0.98);
+  }
 }

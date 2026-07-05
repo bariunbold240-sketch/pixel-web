@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import TypewriterText from '../TypewriterText'
+import CountUp from '../CountUp'
 import { useLang } from '../../context/LangContext'
 
 interface HeroSectionProps {
@@ -114,6 +115,15 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
       className={`panel${active ? ' active' : ''}`}
       ref={sectionRef}
     >
+      {/* Mobile-only ambient glow (desktop has the WebGL Orb instead) — top-right
+          pink wash so the hero doesn't read as flat black. Contained by the panel's
+          overflow-x:clip, so it never adds horizontal scroll. */}
+      <div
+        className="mobile-ambient md:hidden"
+        aria-hidden="true"
+        style={{ top: '-8%', right: '-15%', width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(236,72,153,0.12) 0%, transparent 70%)' }}
+      />
+
       {/* self-padded: content carries its own 20px mobile gutter; the stats bar
           bleeds full-width to the screen edges for a stronger mobile footer */}
       <div ref={innerRef} className="panel-inner self-padded hero-fill h-full w-full flex flex-col max-w-[1440px] mx-auto">
@@ -136,7 +146,7 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
             {mn ? <>ЗӨВ МЭССЭЖ<b className="text-hot"> ЗӨВ </b>ЗАХ ЗЭЭЛ</> : <>RIGHT MESSAGE<b className="text-hot"> RIGHT </b>MARKET</>}
           </h1>
 
-          <p className="hero-sub mt-6 text-mute text-[clamp(13px,1.1vw,16px)] max-w-[520px] leading-[1.65]">
+          <p className="hero-sub mt-6 text-mute text-[clamp(13px,1.1vw,16px)] max-md:text-[15px] max-w-[520px] max-md:max-w-[34ch] leading-[1.65] max-md:leading-[1.7]">
             <TypewriterText
               text={mn ? 'Бид брэндийн үнэ цэнийг бүтээж, дигитал орчинд тодорхой үр дүн гаргахад тань тусалдаг.' : 'We build brand value and help you achieve clear results in the digital world.'}
               active={active && ready}
@@ -170,7 +180,7 @@ export default function HeroSection({ active, ready, sectionRef }: HeroSectionPr
               ].filter(Boolean).join(' ')}
             >
               <span className="text-[clamp(20px,2.4vw,36px)] font-bold text-hot leading-none">
-                {stat.value}
+                <CountUp value={stat.value} />
               </span>
               <span className="text-[clamp(10px,0.9vw,13px)] text-mute tracking-wide text-center px-2">
                 {mn ? stat.mn : stat.en}

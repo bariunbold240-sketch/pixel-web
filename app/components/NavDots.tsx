@@ -38,12 +38,12 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
       {/* Mobile + tablet (<1024px): horizontal bottom nav bar — icon + short
           single-line label per tab so every label fits (the full names wrapped). */}
       <nav
-        className="flex lg:hidden fixed bottom-0 left-0 right-0 z-50 items-stretch justify-around"
+        className="flex lg:hidden fixed bottom-0 left-0 right-0 z-50 items-stretch justify-around px-1"
         style={{
-          background: 'rgba(5,5,20,0.82)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
+          background: 'rgba(5,5,8,0.85)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
           minHeight: 60,
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
@@ -57,7 +57,7 @@ export default function NavDots({ cur, vizCur = cur, go }: NavDotsProps) {
               onClick={() => go(i)}
               aria-label={names[i]}
               aria-current={active ? 'page' : undefined}
-              className="flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer border-0 bg-transparent pt-2 pb-1.5 relative min-h-14
+              className="flex-1 min-w-0 flex flex-col items-center justify-center gap-1 cursor-pointer border-0 bg-transparent px-0.5 pt-2 pb-1.5 relative min-h-14
                          transition-transform duration-150 active:scale-90"
             >
               {/* Active indicator line at top */}

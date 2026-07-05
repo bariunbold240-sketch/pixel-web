@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLang } from '../../context/LangContext'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
+import CountUp from '../CountUp'
 
 interface WorkSectionProps {
   active: boolean
@@ -268,7 +269,7 @@ function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContent
   }, [])
 
   return (
-    <div ref={ref} className="flex flex-col gap-6 relative z-10">
+    <div ref={ref} className="flex flex-col gap-6 max-md:gap-5 relative z-10">
       <p
         data-anim="tag"
         className="text-[11px] font-bold tracking-[0.22em] uppercase"
@@ -299,12 +300,12 @@ function LeftContent({ p, activeIdx, totalCount, goTo, idxRef, mn }: LeftContent
 
       <div className="grid grid-cols-3 gap-2 md:gap-3">
         {p.stats.map((s) => (
-          <div data-anim="stat" key={s.en} className="glass-card rounded-2xl p-3 md:p-4 text-center">
+          <div data-anim="stat" key={s.en} className="work-stat-card glass-card rounded-2xl p-3 md:p-4 text-center">
             <p
               className="text-[clamp(18px,2vw,28px)] font-black leading-none mb-1"
               style={{ color: p.accent }}
             >
-              {s.n}
+              <CountUp value={s.n} />
             </p>
             <p className="text-[10px] text-mute tracking-wide">{mn ? s.mn : s.en}</p>
           </div>
@@ -534,7 +535,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
             fixed header; md+ keeps the original clamp formula pixel-for-pixel */}
         <div
           className="shrink-0 flex flex-col md:justify-center relative overflow-hidden w-full md:w-[46%] md:h-full lg:w-[48%]
-                     p-5 pt-12 md:p-[clamp(28px,5vw,80px)] md:pt-[max(80px,clamp(28px,5vw,80px))]"
+                     p-5 pt-12 max-md:pb-1 md:p-[clamp(28px,5vw,80px)] md:pt-[max(80px,clamp(28px,5vw,80px))]"
         >
           <div
             className="pointer-events-none absolute w-[420px] h-[420px] rounded-full"
@@ -580,7 +581,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
             <div
               key={i}
               ref={(el) => { mockupRefs.current[i] = el }}
-              className="absolute inset-0 flex items-center justify-center p-4 md:p-8"
+              className="absolute inset-0 flex items-center justify-center p-4 md:p-8 max-md:pt-0"
             >
               <div className="relative w-full" style={{ maxWidth: 500 }}>
                 <div
@@ -636,8 +637,14 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
           <div
             className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-proximity pb-1 px-5"
             style={{
-              maskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%)',
+              // snap-start aligned the first item to x=0 (under the fade) → CarCare
+              // was clipped. scroll-padding keeps snapped items inside the opaque band.
+              scrollPaddingLeft: '20px',
+              scrollPaddingRight: '20px',
+              // Fade masks hint horizontal scroll; left fade ends at 20px so the first
+              // logo (padded 20px) stays fully visible, wider 40px fade on the right.
+              maskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 40px), transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 40px), transparent 100%)',
             }}
           >
             {stripIcons.map((icon, i) => (

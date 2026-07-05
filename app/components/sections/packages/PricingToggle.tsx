@@ -8,15 +8,15 @@ interface PricingToggleProps {
   labels: string[]
 }
 
-// Floating segmented control — desktop pagination only (mobile/tablet show
-// all plans via the carousel/grid, no page concept there).
+// Floating segmented control — page switcher for the paginated plan sets.
+// Shown on every breakpoint (mobile paginates 4-up too), centered above the cards.
 export default function PricingToggle({ page, onChange, labels }: PricingToggleProps) {
   if (labels.length === 0) return null
 
   return (
     <div
       data-anim
-      className="hidden md:inline-flex mx-auto p-1 rounded-full gap-1 max-w-full"
+      className="inline-flex mx-auto mt-3 md:mt-0 p-1 rounded-full gap-1 max-w-full"
       style={{ background: 'rgba(111,99,255,0.08)', border: '1px solid rgba(111,99,255,0.18)' }}
     >
       {labels.map((label, p) => (

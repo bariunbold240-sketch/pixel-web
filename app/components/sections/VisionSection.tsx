@@ -2,6 +2,7 @@
 
 import { useSectionAnim } from '../useSectionAnim'
 import TypewriterText from '../TypewriterText'
+import CountUp from '../CountUp'
 import { useLang } from '../../context/LangContext'
 
 const VISION_MN = 'Бид байгуулагуудын зөв санаа, зөв стратегийг зөв зах зээлд хүргэж, маркетингийг зардал бус өсөлтийн бодит хөдөлгөгч хүч болгодог итгэлтэй түнш агентлаг байхыг зорьдог.'
@@ -115,7 +116,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
                 <div key={s.n} className="flex flex-col gap-1.5">
                   <p className="text-[clamp(22px,2.2vw,30px)] font-black leading-none"
                     style={{ color: s.color }}>
-                    {s.n}
+                    <CountUp value={s.n} />
                   </p>
                   <p className="text-[11px] tracking-wide" style={{ color: 'rgba(184,194,221,0.5)' }}>
                     {mn ? s.mn : s.en}
@@ -163,7 +164,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
                       {mn ? v.mn : v.en}
                     </p>
 
-                    <span className="shrink-0 text-[13px] group-hover:translate-x-0.5 transition-transform duration-300"
+                    <span className="shrink-0 text-[13px] group-hover:translate-x-0.5 group-active:translate-x-1 transition-transform duration-300"
                       style={{ color: v.color + '50' }}>
                       →
                     </span>

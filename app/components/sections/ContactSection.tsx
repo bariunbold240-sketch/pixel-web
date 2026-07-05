@@ -71,6 +71,14 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
   return (
     <section className={`panel${active ? ' active' : ''}`} ref={sectionRef}>
 
+      {/* Mobile-only ambient glow — bottom-left pink wash, contained by the
+          panel's overflow-x:clip so it never adds horizontal scroll. */}
+      <div
+        className="mobile-ambient md:hidden"
+        aria-hidden="true"
+        style={{ bottom: '-6%', left: '-15%', width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%)' }}
+      />
+
       {/* Glow orbs */}
       <div className="glow-orb w-[550px] h-[550px] top-[-15%] right-[-5%]"
         style={{ background: 'radial-gradient(circle, rgba(111,99,255,0.2) 0%, transparent 70%)' }} />

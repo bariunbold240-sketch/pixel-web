@@ -34,7 +34,7 @@ export default function PricingCard({ plan, globalIndex, Icon, badgeLabel }: Pri
       data-no-hover
       className={`group relative cursor-default w-full md:w-auto h-full
                 transition-transform duration-300 ease-out md:hover:-translate-y-2 active:scale-[0.985]
-                ${isFeatured ? 'md:scale-[1.03] md:hover:scale-[1.045] max-md:mt-4' : 'md:hover:scale-[1.02]'}`}
+                ${isFeatured ? 'md:scale-[1.03] md:hover:scale-[1.045] max-md:mt-6' : 'md:hover:scale-[1.02]'}`}
     >
       {isFeatured && (
         <motion.div

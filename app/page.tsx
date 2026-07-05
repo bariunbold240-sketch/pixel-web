@@ -178,8 +178,11 @@ export default function Page() {
         <Orb hue={0} hoverIntensity={0.3} rotateOnHover backgroundColor="#000000" className="site-orb" />
       )}
 
-      {/* Vignette */}
-      <div className="fixed inset-0 z-[1] pointer-events-none [background:radial-gradient(120%_90%_at_78%_18%,transparent_30%,rgba(0,0,0,0.8)_100%)]" />
+      {/* Vignette — frames the desktop WebGL Orb. Hidden on mobile: there the deck
+          is position:static (normal scroll) so its z-[2] is voided, which would drop
+          this fixed z-[1] overlay ON TOP of the section glow-orbs and wash the whole
+          background to flat black. Mobile uses the .mobile-ambient glows instead. */}
+      <div className="fixed inset-0 z-[1] pointer-events-none max-md:hidden [background:radial-gradient(120%_90%_at_78%_18%,transparent_30%,rgba(0,0,0,0.8)_100%)]" />
 
       <AppNav cur={cur} go={go} />
 

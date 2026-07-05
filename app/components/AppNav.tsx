@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Logo3D from './Logo3D'
 import { useLang } from '../context/LangContext'
 import { T } from '../data/translations'
@@ -14,13 +14,24 @@ export default function AppNav({ cur, go }: AppNavProps) {
   const { lang, setLang } = useLang()
   const t = T[lang]
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const close = () => setOpen(false)
+
+  // Mobile only: fade the header's blurred backdrop in once the body scrolls off
+  // the top, so the hero flows under a transparent header. On desktop the body is
+  // deck-mode (never scrolls), so scrollY stays 0 and the header stays transparent.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <>
-      {/* .app-nav gets a blurred backdrop below 768px (globals.css) — mobile scroll
-          mode passes content under the header; deck mode never does */}
-      <nav className="app-nav fixed top-0 left-0 right-0 z-40 mx-auto flex items-center justify-between px-[clamp(18px,5vw,52px)] py-2">
+      {/* .app-nav is transparent at the top and gains a blurred backdrop below 768px
+          once scrolled (or when the menu is open) — see globals.css */}
+      <nav className={`app-nav fixed top-0 left-0 right-0 z-40 mx-auto flex items-center justify-between px-[clamp(18px,5vw,52px)] py-2${scrolled || open ? ' scrolled' : ''}`}>
         {/* Logo + brand name */}
         <div className="flex items-center shrink-0">
           <button
