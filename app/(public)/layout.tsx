@@ -1,3 +1,13 @@
+import type { Metadata } from 'next'
+
+// Client-portal auth pages — utility screens, kept out of the search index.
+export const metadata: Metadata = {
+  // `default` fills pages with no title of their own; `template` suffixes child
+  // pages (register, forgot-password) that set their own title.
+  title: { default: 'Нэвтрэх', template: '%s | PIXEL' },
+  robots: { index: false, follow: false },
+}
+
 // PublicLayout — no sidebar, centered auth wrapper
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,5 +1,13 @@
-﻿import Sidebar from '../components/dashboard/Sidebar'
+﻿import type { Metadata } from 'next'
+import Sidebar from '../components/dashboard/Sidebar'
 import MobileDashboardNav from '../components/dashboard/MobileDashboardNav'
+
+// Authenticated client portal — never indexed.
+export const metadata: Metadata = {
+  // `template` suffixes child pages (projects, settings) that set their own title.
+  title: { default: 'Хэрэглэгчийн самбар', template: '%s | PIXEL' },
+  robots: { index: false, follow: false },
+}
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,8 +1,10 @@
+import type { Metadata } from 'next'
 import type { Package } from '@prisma/client'
 import { prisma } from '@/lib/db'
 import PackagesManager from './PackagesManager'
 
 export const dynamic = 'force-dynamic'
+export const metadata: Metadata = { title: 'Багц' }
 
 interface Feature {
   label: string

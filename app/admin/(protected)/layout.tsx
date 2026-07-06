@@ -1,6 +1,14 @@
+import type { Metadata } from 'next'
 import AdminSidebar from '@/app/components/admin/AdminSidebar'
 import AdminMobileNav from '@/app/components/admin/AdminMobileNav'
 import AdminScrollUnlock from '@/app/components/admin/AdminScrollUnlock'
+
+// Admin CMS — never indexed.
+export const metadata: Metadata = {
+  // `template` suffixes child pages (packages, projects, gallery, icons) with their own title.
+  title: { default: 'Админ', template: '%s | PIXEL' },
+  robots: { index: false, follow: false },
+}
 
 export default function AdminProtectedLayout({ children }: { children: React.ReactNode }) {
   return (

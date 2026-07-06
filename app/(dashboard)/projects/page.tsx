@@ -1,4 +1,8 @@
-﻿const PROJECTS = [
+﻿import type { Metadata } from 'next'
+
+export const metadata: Metadata = { title: 'Төслүүд' }
+
+const PROJECTS = [
   { name: 'GYMHUB Фитнесс',    status: 'Идэвхтэй', members: 6932, color: '#15a59a' },
   { name: 'NOVA MIND Acadем',  status: 'Идэвхтэй', members: 420,  color: '#6f63ff' },
   { name: 'BLUEBELL Цэцэгхан', status: 'Хянаж байна', members: 118, color: '#ff4fd8' },

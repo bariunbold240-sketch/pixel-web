@@ -1,4 +1,8 @@
-﻿const STATS = [
+﻿import type { Metadata } from 'next'
+
+export const metadata: Metadata = { title: 'Хянах самбар' }
+
+const STATS = [
   { label: 'Нийт хэрэглэгч', value: '6,932', change: '+12%', color: '#15a59a' },
   { label: 'Төлбөр',         value: '2,949', change: '+8%',  color: '#6f63ff' },
   { label: 'Компани',        value: '197',   change: '+3%',  color: '#ff4fd8' },

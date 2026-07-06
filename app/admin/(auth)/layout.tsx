@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+// Admin login — never indexed.
+export const metadata: Metadata = {
+  title: 'Админ нэвтрэх',
+  robots: { index: false, follow: false },
+}
+
 // Centered wrapper for the login page — no sidebar
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

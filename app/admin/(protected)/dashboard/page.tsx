@@ -1,6 +1,8 @@
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
+export const metadata: Metadata = { title: 'Хянах самбар' }
 
 export default async function AdminDashboardPage() {
   const [photoCount, iconCount, packageCount, projectCount, recentPhotos, recentIcons] = await Promise.all([
