@@ -16,8 +16,13 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'PIXEL — Танилцуулга',
+  title: 'Pixel',
   description: 'PIXEL Social Media Mongolia — Зөв мессеж · Зөв зах зээл',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 }
 
 // viewport-fit=cover lets the fixed bottom nav extend under the iPhone home
