@@ -48,10 +48,10 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
         <div className="mb-5 lg:mb-10 flex items-end justify-between max-md:flex-col max-md:items-start max-md:gap-3">
           <div>
             <p data-anim className="text-[11px] font-bold tracking-[0.22em] uppercase text-hot mb-3">
-              <TypewriterText text={mn ? '02 — Алсын Харааа · Үнэт Зүйл' : '02 — Vision · Values'} active={active} speed={22} delay={150} />
+              <TypewriterText text={mn ? '02 — Алсын Хараа · Үнэт Зүйл' : '02 — Vision · Values'} active={active} speed={22} delay={150} />
             </p>
             <h2 data-anim className="text-[clamp(32px,4.5vw,60px)] font-black uppercase leading-[0.9] tracking-[-0.02em]">
-              <TypewriterText text={mn ? 'Алсын Харааа, ' : 'Vision, '} active={active} speed={42} delay={400} />
+              <TypewriterText text={mn ? 'Алсын Хараа, ' : 'Vision, '} active={active} speed={42} delay={400} />
               <span className="gradient-text">
                 <TypewriterText text={mn ? 'Үнэт Зүйл' : 'Values'} active={active} speed={50} delay={1020} />
               </span>
@@ -96,7 +96,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
                 </svg>
               </div>
               <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: 'rgba(184,194,221,0.5)' }}>
-                {mn ? 'Алсын Харааа' : 'Vision'}
+                {mn ? 'Алсын Хараа' : 'Vision'}
               </span>
             </div>
 
@@ -204,7 +204,7 @@ export default function VisionSection({ active, sectionRef }: VisionSectionProps
           style={{ borderTop: '1px solid rgba(111,99,255,0.12)' }}>
           <span className="section-num">02 / 06</span>
           <span className="text-[10px] uppercase tracking-[0.18em]" style={{ color: 'rgba(184,194,221,0.35)' }}>
-            {mn ? 'Алсын Харааа' : 'Vision'}
+            {mn ? 'Алсын Хараа' : 'Vision'}
           </span>
         </div>
       </div>

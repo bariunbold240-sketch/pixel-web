@@ -40,7 +40,7 @@ const PROJECTS = [
   {
     num: '05',
     tag: { mn: 'Вэбсайт', en: 'Website' },
-    title: { mn: ['NOVA MIND', 'Acadемy'], en: ['NOVA MIND', 'Academy'] },
+    title: { mn: ['NOVA MIND', 'Академи'], en: ['NOVA MIND', 'Academy'] },
     description: {
       mn: 'Боловсролын төвийн вэбсайт — хөтөлбөрийн каталог, бүртгэл, хоёр хэлний интерфэйс.',
       en: 'Education center website — program catalog, registration, and bilingual interface.',
@@ -163,20 +163,26 @@ function buildSlides(projects: ProjectRecord[]): ProjectSlide[] {
   return projects.map((project, index) => {
     const fallback = PROJECTS[index % PROJECTS.length]
     const accent = normalizeHexColor(project.color, fallback.accent)
-    const title = splitTitle(project.name || fallback.title.en.join(' '), fallback.title.en)
-    const description = project.description?.trim() || fallback.description.en
+
+    // Admin-entered fields are single-language: when the admin fills them in, the same
+    // text shows in both MN and EN. But when a field is left blank we must fall back to
+    // the *matching* language of the bilingual hardcoded copy — otherwise the MN view
+    // leaks the English fallback text (and vice-versa).
+    const name = project.name?.trim()
+    const title = name
+      ? { mn: splitTitle(name, fallback.title.mn), en: splitTitle(name, fallback.title.en) }
+      : { mn: fallback.title.mn, en: fallback.title.en }
+
+    const desc = project.description?.trim()
+    const description = desc
+      ? { mn: desc, en: desc }
+      : { mn: fallback.description.mn, en: fallback.description.en }
 
     return {
       num: String(index + 4).padStart(2, '0'),
       tag: fallback.tag,
-      title: {
-        mn: title,
-        en: title,
-      },
-      description: {
-        mn: description,
-        en: description,
-      },
+      title,
+      description,
       stats: normalizeStats(project.stats, fallback.stats),
       accent,
       mockupGrad: `linear-gradient(135deg, ${hexToRgba(accent, 0.28)} 0%, ${hexToRgba(accent, 0.12)} 50%, #05050d 100%)`,

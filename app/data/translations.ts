@@ -9,8 +9,8 @@ export const T = {
     tabShort: ['Эхлэл', 'Алсын', 'Туршлага', 'Хамтрагч', 'Багц', 'Холбоо'],
   },
   en: {
-    nav: ['Vision', 'About Us', 'Portfolio', 'Packages', 'Contact'],
-    panelNames: ['Home', 'Vision', 'About Us', 'Portfolio', 'Packages', 'Contact'],
-    tabShort: ['Home', 'Vision', 'Work', 'Partners', 'Plans', 'Contact'],
+    nav: ['Vision', 'Experience', 'Partners', 'Packages', 'Contact'],
+    panelNames: ['Home', 'Vision', 'Experience', 'Partners', 'Packages', 'Contact'],
+    tabShort: ['Home', 'Vision', 'Experience', 'Partners', 'Packages', 'Contact'],
   },
 } as const
