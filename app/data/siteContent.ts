@@ -240,4 +240,4 @@ export const packagePlans: PackagePlan[] = [
   },
 ]
 
-export const contactPhone = '7270 3873'
+export const contactPhone = '87114000'

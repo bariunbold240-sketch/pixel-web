@@ -7,17 +7,13 @@ import { useLang } from '../../context/LangContext'
 import {
   FaFacebookF,
   FaInstagram,
-  FaLinkedinIn,
-  FaBehance,
 } from "react-icons/fa";
 
 
 
 const SOCIALS = [
-  { label: "Facebook", href: "#", icon: FaFacebookF },
-  { label: "Instagram", href: "#", icon: FaInstagram },
-  { label: "LinkedIn", href: "#", icon: FaLinkedinIn },
-  { label: "Behance", href: "#", icon: FaBehance },
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61586873402217&rdid=VXNvkj5qArlEJT5x&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1CHsuNCPvg%2F#", icon: FaFacebookF },
+  { label: "Instagram", href: "https://www.instagram.com/pixel.mongolia?igsh=YjE2djc5ajJxeTRv", icon: FaInstagram },
 ];
 
 interface ContactSectionProps {
@@ -50,8 +46,8 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
         </svg>
       ),
       label: mn ? 'И-мэйл' : 'Email',
-      value: 'hello@pixel.mn',
-      href: 'mailto:hello@pixel.mn',
+      value: 'pixelmedia097@gmail.com',
+      href: 'mailto:pixelmedia097@gmail.com',
       color: '#ff4fd8',
     },
     {
@@ -257,8 +253,8 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-4" style={{ color: 'rgba(184,194,221,0.45)' }}>
                 {mn ? 'Сошиал хаяг' : 'Social Media'}
               </p>
-              {/* 2x2 on mobile (bigger tap targets, equal heights), 4-across on desktop */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-2">
+              {/* Two social links — side by side on both mobile and desktop */}
+              <div className="grid grid-cols-2 gap-2.5 md:gap-2">
                 {SOCIALS.map((s) => (
                   <a
                     key={s.label}

@@ -237,7 +237,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
 
         {/* Premium info panel */}
         <div className="mt-4">
-          <InfoPanel mn={mn} phone="7270 3873" />
+          <InfoPanel mn={mn} phone="87114000" />
         </div>
 
         {/* Footer — unchanged, matches the rest of the site's per-section marker */}
@@ -245,7 +245,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
           <span className="section-num">05 / 06</span>
           <p className="text-[11px] text-mute/50 text-center">
             {mn ? 'Холбоо барих:' : 'Contact:'}{' '}
-            <span className="text-hot font-bold">7270 3873</span>
+            <span className="text-hot font-bold">87114000</span>
           </p>
           <span className="text-[10px] text-mute/40 uppercase tracking-[0.18em]">{mn ? 'Багц' : 'Packages'}</span>
         </div>
