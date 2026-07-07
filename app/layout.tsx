@@ -49,9 +49,11 @@ export const metadata: Metadata = {
   publisher: SITE_NAME,
   alternates: { canonical: '/' },
   icons: {
-    icon: '/logo.png',
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    // Square 512×512 icon derived from the logo — Google/browsers require a
+    // square favicon, so the rectangular /logo.png is padded to /icon.png.
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
   },
   openGraph: {
     type: 'website',
