@@ -502,7 +502,7 @@ export default function WorkSection({ active, sectionRef }: WorkSectionProps) {
   return (
     <section className={`panel${active ? ' active' : ''}`} ref={sectionRef}>
       {/* ── Technology Showcase Strip (desktop only) ── */}
-      <div className="hidden lg:block absolute z-20" style={{ left: '50%', transform: 'translateX(-50%)', width: 560, bottom: 32 }}>
+      <div className="hidden lg:block absolute z-20" style={{ left: '50%', transform: 'translateX(-50%)', width: 'min(1100px, 78vw)', bottom: 32 }}>
         <div
           className="pointer-events-none absolute inset-x-0"
           style={{ top: -40, height: 140, background: `radial-gradient(ellipse 60% 100% at 50% 100%, ${p.accent}14 0%, transparent 70%)` }}

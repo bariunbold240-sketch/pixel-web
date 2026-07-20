@@ -4,8 +4,8 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useSectionAnim } from '../useSectionAnim'
 import TypewriterText from '../TypewriterText'
 import { useLang } from '../../context/LangContext'
-
-const GRAIN_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E")`
+import VideoRail, { type TeamVideo } from './team/VideoRail'
+import { GRAIN_SVG } from './team/grain'
 
 const DEFAULT_PHOTOS = [
   '/photo_2026-06-26_12-48-06.jpg',
@@ -153,6 +153,7 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
   const mn = lang === 'mn'
   const [idx, setIdx] = useState(0)
   const [photos, setPhotos] = useState(DEFAULT_PHOTOS)
+  const [videos, setVideos] = useState<TeamVideo[]>([])
   const imgRefs    = useRef<(HTMLImageElement | null)[]>([])
   const prevIdxRef = useRef(0)
   const thumbRefs  = useRef<(HTMLButtonElement | null)[]>([])
@@ -185,7 +186,22 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
       }
     }
 
+    async function loadVideos() {
+      try {
+        const res = await fetch('/api/videos', { cache: 'no-store' })
+        if (!res.ok) return
+
+        const data = await res.json() as TeamVideo[]
+        if (cancelled || !Array.isArray(data)) return
+
+        setVideos(data.filter((v) => v?.youtubeId))
+      } catch {
+        // The rail simply doesn't render when the API is unavailable.
+      }
+    }
+
     void loadGalleryPhotos()
+    void loadVideos()
 
     return () => {
       cancelled = true
@@ -250,6 +266,9 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
 
         {/* ── Viewer ── */}
         <div data-anim data-no-hover className="flex-1 min-h-0 flex gap-5 items-stretch">
+
+          {/* ── Left panel: featured YouTube videos (desktop only) ── */}
+          <VideoRail videos={videos} variant="rail" heading={mn ? 'Онцлох видео' : 'Featured'} />
 
           {/*
             Hero ZONE — takes remaining width, centers the card.
@@ -414,6 +433,9 @@ export default function TeamSection({ active, sectionRef }: TeamSectionProps) {
             />
           ))}
         </div>
+
+        {/* ── Mobile/tablet featured videos ── */}
+        <VideoRail videos={videos} variant="strip" heading={mn ? 'Онцлох видео' : 'Featured'} />
 
         {/* ── Footer ── */}
         <div

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Zap, Layers, Boxes, Rocket, Gem, Flame, Shield, Crown, type LucideIcon } from 'lucide-react'
-import { packagePlans as DEFAULT_PACKAGE_PLANS, type PackagePlan } from '../../data/siteContent'
+import { packagePlans as DEFAULT_PACKAGE_PLANS, messengerPageId, type PackagePlan } from '../../data/siteContent'
 import { useSectionAnim } from '../useSectionAnim'
 import TypewriterText from '../TypewriterText'
 import { useLang } from '../../context/LangContext'
@@ -45,6 +45,15 @@ function normalizeFeatures(features: unknown): PackagePlan['features'] {
       return { label, value }
     })
     .filter((feature): feature is PackagePlan['features'][number] => feature !== null)
+}
+
+// `ref` is the only context m.me carries, and it reaches the Page through the
+// messaging_referrals webhook rather than the visitor's composer — so it is a
+// tracking hint, not the order message itself. Slugged because the value has to
+// survive URL encoding.
+function messengerLink(planName: string): string {
+  const ref = planName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  return `https://m.me/${messengerPageId}${ref ? `?ref=${encodeURIComponent(ref)}` : ''}`
 }
 
 function buildPlans(records: PackageRecord[]): PackagePlan[] {
@@ -230,6 +239,12 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
                 globalIndex={globalIndex}
                 Icon={PLAN_ICONS[globalIndex % PLAN_ICONS.length]}
                 badgeLabel={mn ? 'Хамгийн онцгой' : 'Most Popular'}
+                ctaLabel={mn ? 'Захиалах' : 'Order now'}
+                ctaCopiedLabel={mn ? 'Хуулагдлаа ✓ чатад буулгана уу' : 'Copied ✓ paste it in the chat'}
+                orderMessage={mn
+                  ? `Сайн байна уу. "${plan.name}" багц сонирхож байна.`
+                  : `Hi! I'm interested in the "${plan.name}" package.`}
+                messengerHref={messengerLink(plan.name)}
               />
             )
           })}
@@ -237,7 +252,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
 
         {/* Premium info panel */}
         <div className="mt-4">
-          <InfoPanel mn={mn} phone="99988130" />
+          <InfoPanel mn={mn} phone="87114000" />
         </div>
 
         {/* Footer — unchanged, matches the rest of the site's per-section marker */}
@@ -245,7 +260,7 @@ export default function PackagesSection({ active, sectionRef }: PackagesSectionP
           <span className="section-num">05 / 06</span>
           <p className="text-[11px] text-mute/50 text-center">
             {mn ? 'Холбоо барих:' : 'Contact:'}{' '}
-            <span className="text-hot font-bold">99988130</span>
+            <span className="text-hot font-bold">87114000</span>
           </p>
           <span className="text-[10px] text-mute/40 uppercase tracking-[0.18em]">{mn ? 'Багц' : 'Packages'}</span>
         </div>

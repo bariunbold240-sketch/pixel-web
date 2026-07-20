@@ -64,3 +64,12 @@ model TechIcon {
   order     Int      @default(0)
   createdAt DateTime @default(now())
 }
+
+// Баг section — онцлох YouTube бичлэгүүд
+model Video {
+  id        Int      @id @default(autoincrement())
+  youtubeId String   // 11-тэмдэгт id, ямар ч хэлбэрийн YouTube линкээс задлагдана
+  title     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}

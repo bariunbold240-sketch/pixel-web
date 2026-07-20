@@ -7,6 +7,7 @@ import { useLang } from '../../context/LangContext'
 import {
   FaFacebookF,
   FaInstagram,
+  FaYoutube,
 } from "react-icons/fa";
 
 
@@ -14,6 +15,7 @@ import {
 const SOCIALS = [
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61586873402217&rdid=VXNvkj5qArlEJT5x&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1CHsuNCPvg%2F#", icon: FaFacebookF },
   { label: "Instagram", href: "https://www.instagram.com/pixel.mongolia?igsh=YjE2djc5ajJxeTRv", icon: FaInstagram },
+  { label: "youtube", href: "https://www.youtube.com/channel/UCgiUN8Jvm-L-rWS3zDLjyqA", icon: FaYoutube },
 ];
 
 interface ContactSectionProps {
@@ -253,8 +255,8 @@ export default function ContactSection({ active, sectionRef }: ContactSectionPro
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-4" style={{ color: 'rgba(184,194,221,0.45)' }}>
                 {mn ? 'Сошиал хаяг' : 'Social Media'}
               </p>
-              {/* Two social links — side by side on both mobile and desktop */}
-              <div className="grid grid-cols-2 gap-2.5 md:gap-2">
+              {/* Three social links — one row on both mobile and desktop */}
+              <div className="grid grid-cols-3 gap-2.5 md:gap-2">
                 {SOCIALS.map((s) => (
                   <a
                     key={s.label}

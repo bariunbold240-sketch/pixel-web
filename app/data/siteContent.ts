@@ -102,58 +102,6 @@ export const workProjects: WorkProject[] = [
 
 export const packagePlans: PackagePlan[] = [
   {
-    name: 'Pixel Smart',
-    price: '',
-    features: [
-      { label: 'Календарчилсан төлөвлөгөө', value: '1' },
-      { label: 'Зах зээлийн судалгаа',      value: '1' },
-      { label: 'Рийл бичлэг',               value: '2' },
-      { label: 'FB IG постер',               value: '7' },
-      { label: 'Fb Cover, Profile',          value: '1' },
-      { label: 'Тайлан',                     value: '1' },
-      { label: 'Зураг авалт',               value: '—' },
-      { label: 'Грйфик дазайны ажил',      value: '—' },
-      { label: 'Chat bot',                   value: '1' },
-      { label: 'Web сайт',                   value: '—' },
-      { label: 'App',                        value: '—' },
-    ],
-  },
-  {
-    name: 'Pixel Core',
-    price: '',
-    featured: true,
-    features: [
-      { label: 'Календарчилсан төлөвлөгөө', value: '1' },
-      { label: 'Зах зээлийн судалгаа',      value: '1' },
-      { label: 'Рийл бичлэг',               value: '10' },
-      { label: 'FB IG постер',               value: '15' },
-      { label: 'Fb Cover, Profile',          value: '1' },
-      { label: 'Тайлан',                     value: '1' },
-      { label: 'Зураг авалт',               value: '1' },
-      { label: 'Грйфик дазайны ажил',      value: '10' },
-      { label: 'Chat bot',                   value: '1' },
-      { label: 'Web сайт',                   value: '1' },
-      { label: 'App',                        value: '1' },
-    ],
-  },
-  {
-    name: 'Pixel Total',
-    price: '',
-    features: [
-      { label: 'Календарчилсан төлөвлөгөө', value: '1' },
-      { label: 'Зах зээлийн судалгаа',      value: '1' },
-      { label: 'Рийл бичлэг',               value: '5' },
-      { label: 'FB IG постер',               value: '10' },
-      { label: 'Fb Cover, Profile',          value: '1' },
-      { label: 'Тайлан',                     value: '1' },
-      { label: 'Зураг авалт',               value: '—' },
-      { label: 'Грийфик дазайны ажил',      value: '—' },
-      { label: 'Chat bot',                   value: '1' },
-      { label: 'Web сайт',                   value: '—' },
-      { label: 'App',                        value: '—' },
-    ],
-  },
-  {
     name: 'Pixel Early',
     price: '',
     features: [
@@ -171,13 +119,13 @@ export const packagePlans: PackagePlan[] = [
     ],
   },
   {
-    name: 'Pixel Premium',
+    name: 'Pixel Smart',
     price: '',
     features: [
       { label: 'Календарчилсан төлөвлөгөө', value: '1' },
       { label: 'Зах зээлийн судалгаа',      value: '1' },
-      { label: 'Рийл бичлэг',               value: '8' },
-      { label: 'FB IG постер',               value: '13' },
+      { label: 'Рийл бичлэг',               value: '2' },
+      { label: 'FB IG постер',               value: '7' },
       { label: 'Fb Cover, Profile',          value: '1' },
       { label: 'Тайлан',                     value: '1' },
       { label: 'Зураг авалт',               value: '—' },
@@ -205,6 +153,23 @@ export const packagePlans: PackagePlan[] = [
     ],
   },
   {
+    name: 'Pixel Total',
+    price: '',
+    features: [
+      { label: 'Календарчилсан төлөвлөгөө', value: '1' },
+      { label: 'Зах зээлийн судалгаа',      value: '1' },
+      { label: 'Рийл бичлэг',               value: '5' },
+      { label: 'FB IG постер',               value: '10' },
+      { label: 'Fb Cover, Profile',          value: '1' },
+      { label: 'Тайлан',                     value: '1' },
+      { label: 'Зураг авалт',               value: '—' },
+      { label: 'Грийфик дазайны ажил',      value: '—' },
+      { label: 'Chat bot',                   value: '1' },
+      { label: 'Web сайт',                   value: '—' },
+      { label: 'App',                        value: '—' },
+    ],
+  },
+  {
     name: 'Pixel Elite',
     price: '',
     features: [
@@ -212,6 +177,23 @@ export const packagePlans: PackagePlan[] = [
       { label: 'Зах зээлийн судалгаа',      value: '1' },
       { label: 'Рийл бичлэг',               value: '7' },
       { label: 'FB IG постер',               value: '12' },
+      { label: 'Fb Cover, Profile',          value: '1' },
+      { label: 'Тайлан',                     value: '1' },
+      { label: 'Зураг авалт',               value: '—' },
+      { label: 'Грйфик дазайны ажил',      value: '—' },
+      { label: 'Chat bot',                   value: '1' },
+      { label: 'Web сайт',                   value: '—' },
+      { label: 'App',                        value: '—' },
+    ],
+  },
+  {
+    name: 'Pixel Premium',
+    price: '',
+    features: [
+      { label: 'Календарчилсан төлөвлөгөө', value: '1' },
+      { label: 'Зах зээлийн судалгаа',      value: '1' },
+      { label: 'Рийл бичлэг',               value: '8' },
+      { label: 'FB IG постер',               value: '13' },
       { label: 'Fb Cover, Profile',          value: '1' },
       { label: 'Тайлан',                     value: '1' },
       { label: 'Зураг авалт',               value: '—' },
@@ -238,6 +220,28 @@ export const packagePlans: PackagePlan[] = [
       { label: 'App',                        value: '—' },
     ],
   },
+  {
+    name: 'Pixel Core',
+    price: '',
+    featured: true,
+    features: [
+      { label: 'Календарчилсан төлөвлөгөө', value: '1' },
+      { label: 'Зах зээлийн судалгаа',      value: '1' },
+      { label: 'Рийл бичлэг',               value: '10' },
+      { label: 'FB IG постер',               value: '15' },
+      { label: 'Fb Cover, Profile',          value: '1' },
+      { label: 'Тайлан',                     value: '1' },
+      { label: 'Зураг авалт',               value: '1' },
+      { label: 'Грйфик дазайны ажил',      value: '10' },
+      { label: 'Chat bot',                   value: '1' },
+      { label: 'Web сайт',                   value: '1' },
+      { label: 'App',                        value: '1' },
+    ],
+  },
 ]
 
-export const contactPhone = '99988130'
+export const contactPhone = '87114000'
+
+// Numeric Facebook Page id, taken from the page URL (facebook.com/profile.php?id=…).
+// m.me resolves numeric ids as well as usernames, so this doubles as the chat link.
+export const messengerPageId = '61586873402217'

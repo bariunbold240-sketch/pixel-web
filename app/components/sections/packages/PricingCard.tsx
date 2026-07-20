@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { type LucideIcon } from 'lucide-react'
 import PricingFeature from './PricingFeature'
@@ -10,6 +11,13 @@ interface PricingCardProps {
   globalIndex: number
   Icon: LucideIcon
   badgeLabel: string
+  ctaLabel: string
+  ctaCopiedLabel: string
+  // Copied to the clipboard on click. Messenger has no URL parameter that
+  // prefills the composer (m.me only supports `ref`, which is webhook-only),
+  // so the visitor pastes this into the chat that opens.
+  orderMessage: string
+  messengerHref: string
 }
 
 // GSAP's useSectionAnim already handles entrance (fade-up + stagger via
@@ -21,8 +29,35 @@ interface PricingCardProps {
 // entrance write. Framer Motion is still used for the featured badge's
 // float and the toggle's sliding pill, which are separate, unanimated-by-
 // GSAP elements.
-export default function PricingCard({ plan, globalIndex, Icon, badgeLabel }: PricingCardProps) {
+export default function PricingCard({
+  plan,
+  globalIndex,
+  Icon,
+  badgeLabel,
+  ctaLabel,
+  ctaCopiedLabel,
+  orderMessage,
+  messengerHref,
+}: PricingCardProps) {
   const isFeatured = !!plan.featured
+  const [copied, setCopied] = useState(false)
+  const copiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (copiedTimer.current) clearTimeout(copiedTimer.current) }, [])
+
+  // Fires alongside the anchor's own navigation — never preventDefault, so the
+  // chat opens even when the clipboard is unavailable (insecure origin, denied
+  // permission, older browser).
+  function handleOrderClick() {
+    void navigator.clipboard?.writeText(orderMessage).then(
+      () => {
+        setCopied(true)
+        if (copiedTimer.current) clearTimeout(copiedTimer.current)
+        copiedTimer.current = setTimeout(() => setCopied(false), 4000)
+      },
+      () => {},
+    )
+  }
 
   return (
     // Outer wrapper has NO overflow-hidden — the featured badge sits in this layer,
@@ -107,16 +142,34 @@ export default function PricingCard({ plan, globalIndex, Icon, badgeLabel }: Pri
             ))}
           </ul>
 
-          {/* Bottom: price */}
-          <div className="flex items-baseline gap-1.5 pt-3 mt-auto" style={{ borderTop: '1px solid rgba(111,99,255,0.14)' }}>
-            <span
-              className="text-[clamp(18px,1.8vw,24px)] font-black leading-none"
-              style={isFeatured
-                ? { background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', WebkitBackgroundClip: 'text', color: 'transparent' }
-                : { color: '#f7f9ff' }}
+          {/* Bottom: price + order CTA */}
+          <div className="flex flex-col gap-3 pt-3 mt-auto" style={{ borderTop: '1px solid rgba(111,99,255,0.14)' }}>
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className="text-[clamp(18px,1.8vw,24px)] font-black leading-none"
+                style={isFeatured
+                  ? { background: 'linear-gradient(135deg,#6f63ff,#ff4fd8)', WebkitBackgroundClip: 'text', color: 'transparent' }
+                  : { color: '#f7f9ff' }}
+              >
+                {plan.price || <span className="text-mute/30 text-[13px]">—</span>}
+              </span>
+            </div>
+
+            <a
+              href={messengerHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleOrderClick}
+              className={`w-full max-md:min-h-11 rounded-xl px-4 py-2.5 cursor-pointer
+                          text-[12px] font-bold leading-tight text-center text-balance
+                          flex items-center justify-center
+                          active:scale-[0.98] transition-[opacity,border-color,background-color,transform]
+                          ${isFeatured
+                            ? 'bg-[linear-gradient(135deg,#6f63ff,#ff4fd8)] text-white shadow-[0_12px_30px_rgba(111,99,255,0.28)] hover:opacity-90'
+                            : 'border border-[rgba(111,99,255,0.35)] text-pxwhite hover:border-hot hover:bg-white/5'}`}
             >
-              {plan.price || <span className="text-mute/30 text-[13px]">—</span>}
-            </span>
+              {copied ? ctaCopiedLabel : ctaLabel}
+            </a>
           </div>
         </div>
       </div>

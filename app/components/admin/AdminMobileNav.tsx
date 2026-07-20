@@ -56,6 +56,16 @@ const NAV = [
       </svg>
     ),
   },
+  {
+    href: '/admin/videos',
+    label: 'Бичлэг',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="3" />
+        <polygon points="10 9 15 12 10 15" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
 ] as const
 
 export default function AdminMobileNav() {
